@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MailService {
@@ -19,14 +20,13 @@ public class MailService {
         this.javaMailSender = javaMailSender;
     }
 
+    @Transactional
     public void sendUserCreatedMessage(DBUser user, String password) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
         helper.setTo(user.getContactData().get("email"));
         helper.setText(message(user, password));
         helper.setSubject("Hello  to " + user.getCompany() + " airline");
-        //ClassPathResource imageResource = new ClassPathResource(IMAGE_PATH);
-        //helper.addInline("image", imageResource);
         javaMailSender.send(mimeMessage);
     }
 

@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends MongoRepository<DBUser, String> {
-    @Query(value="{ 'username': ?0 }", fields="{ 'username' : 1, 'password' : 1, 'enabled' : 1, 'role' : 1}")
+    @Query(value = "{ 'username': ?0 }", fields = "{ 'username' : 1, 'password' : 1, 'enabled' : 1, 'role' : 1}")
     Optional<SecurityUser> findByUsername(String username);
 }
