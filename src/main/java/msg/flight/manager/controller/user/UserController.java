@@ -19,12 +19,8 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody RegistrationUser user) {
-        try {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody(required = true) RegistrationUser user) {
             return userService.save(user);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

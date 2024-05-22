@@ -1,13 +1,11 @@
 package msg.flight.manager.services;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import msg.flight.manager.persistence.models.user.DBUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MailService {
@@ -20,14 +18,17 @@ public class MailService {
         this.javaMailSender = javaMailSender;
     }
 
-    @Transactional
-    public void sendUserCreatedMessage(DBUser user, String password) throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-        helper.setTo(user.getContactData().get("email"));
-        helper.setText(message(user, password));
-        helper.setSubject("Hello  to " + user.getCompany() + " airline");
-        javaMailSender.send(mimeMessage);
+    @Async
+    public void sendUserCreatedMessage(DBUser user, String password) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getContactData().get("email"));
+        mailMessage.setSubject("Hello to " + user.getCompany() + " airline");
+        mailMessage.setText(message(user, password));
+        try {
+            javaMailSender.send(mailMessage);
+        } catch (Exception e) {
+            throw new RuntimeException("Error sending email: " + e.getMessage());
+        }
     }
 
     private String message(DBUser user, String password) {

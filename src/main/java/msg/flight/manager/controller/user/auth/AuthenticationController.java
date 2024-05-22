@@ -20,7 +20,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody(required = true) AuthenticationRequest request) {
         return authenticationService.login(request);
     }
 }

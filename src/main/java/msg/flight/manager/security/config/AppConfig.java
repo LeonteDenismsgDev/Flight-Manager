@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,7 +31,11 @@ public class AppConfig {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 Optional<SecurityUser> user = userRepository.findByUsername(username);
-                return user.orElse(null);
+                if(user.isPresent()){
+                    return user.get();
+                }else{
+                    throw new UsernameNotFoundException("Nonexistent user");
+                }
             }
         };
     }

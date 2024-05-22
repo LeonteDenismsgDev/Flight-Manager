@@ -1,6 +1,5 @@
 package msg.flight.manager.services;
 
-import jakarta.mail.MessagingException;
 import msg.flight.manager.persistence.dtos.user.RegistrationUser;
 import msg.flight.manager.persistence.models.user.DBUser;
 import msg.flight.manager.persistence.repositories.UserRepository;
@@ -21,7 +20,7 @@ public class UserService {
     MailService mailService;
 
     @Transactional
-    public ResponseEntity<String> save(RegistrationUser registrationUser) throws MessagingException {
+    public ResponseEntity<String> save(RegistrationUser registrationUser) {
         String password = UserServicesUtil.generatePassword();
         DBUser dbUser = DBUser.builder()
                 .firstName(registrationUser.getFirstName())
