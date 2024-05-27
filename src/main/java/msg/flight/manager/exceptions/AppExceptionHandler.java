@@ -3,6 +3,8 @@ package msg.flight.manager.exceptions;
 import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,10 +35,16 @@ public class AppExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bad credentials!");
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> accessDenied(Exception e) throws Exception {
+                return new ResponseEntity<>("No authorities",HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleRuntimesExceptions(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
 
 }
