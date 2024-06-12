@@ -10,8 +10,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 public class ManagerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ManagerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ManagerApplication.class, args);
+    }
 
 }

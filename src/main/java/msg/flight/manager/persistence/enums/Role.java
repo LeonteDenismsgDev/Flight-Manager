@@ -1,5 +1,8 @@
 package msg.flight.manager.persistence.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Role {
     CREW_ROLE("cr"), FLIGHT_MANAGER_ROLE("fm"), COMPANY_MANAGER_ROLE("cm"), ADMINISTRATOR_ROLE("ad");
 
@@ -9,7 +12,4 @@ public enum Role {
         this.value = value;
     }
 
-    public String getValue() {
-        return this.value;
-    }
 }

@@ -1,13 +1,11 @@
 package msg.flight.manager.security.config;
 
-import lombok.RequiredArgsConstructor;
 import msg.flight.manager.security.exceptions.CustomAccessDeniedHandler;
 import msg.flight.manager.security.exceptions.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,11 +22,11 @@ public class SecurityConfig {
     @Autowired
     private JWTAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
-    private  AuthenticationProvider authenticationProvider;
+    private AuthenticationProvider authenticationProvider;
     @Autowired
     private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     @Autowired
-    private  CustomAccessDeniedHandler customAccessDeniedHandler;
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
 
     @Bean
@@ -42,7 +40,7 @@ public class SecurityConfig {
                 .cors(cors -> {
                     cors.configurationSource(request -> {
                         CorsConfiguration corsConfiguration = new CorsConfiguration();
-                        corsConfiguration.addAllowedOrigin("http://localhost:4200"); // Replace with your frontend origin
+                        corsConfiguration.addAllowedOrigin("http://localhost:4200");
                         corsConfiguration.addAllowedHeader("*");
                         corsConfiguration.addAllowedMethod("*");
                         corsConfiguration.setAllowCredentials(true);

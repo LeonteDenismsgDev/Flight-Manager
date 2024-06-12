@@ -2,7 +2,6 @@ package msg.flight.manager.persistence.repositories;
 
 import com.mongodb.client.result.UpdateResult;
 import msg.flight.manager.persistence.models.user.DBToken;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -32,14 +31,24 @@ public class TokenRepository {
     }
 
     public void save(DBToken token) {
-        template.save(token,"tokens");
+        template.save(token, "tokens");
     }
 
-    public void manageTokens(){
-        Criteria criteria = new Criteria().orOperator(Criteria.where("rejected").is(true),Criteria.where("expirationDate").lt(LocalDateTime.now()));
+    public void manageTokens() {
+        Criteria criteria = new Criteria().orOperator(Criteria.where("rejected").is(true), Criteria.where("expirationDate").lt(LocalDateTime.now()));
         Query query = new Query(criteria);
-        template.remove(query,"tokens");
+        template.remove(query, "tokens");
     }
 
 
+    public void disableUser(String username) {
+        Query query = new Query(Criteria.where("username").is(username));
+        template.findAllAndRemove(query, DBToken.class);
+    }
+
+    public void deleteToken(String token) {
+        Query query = new Query(Criteria.where("_id").is(token));
+        template.remove(query, "tokens");
+        template.remove(query, "tokens");
+    }
 }

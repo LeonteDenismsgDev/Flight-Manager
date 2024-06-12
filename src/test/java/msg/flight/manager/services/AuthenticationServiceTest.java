@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.context.properties.bind.validation.BindValidationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,9 +30,11 @@ public class AuthenticationServiceTest {
     @Mock
     private JWTService jwtService;
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Mock
-    AuthenticationManager manager;
+    private AuthenticationManager manager;
+    @Mock
+    private JWTService service;
     @InjectMocks
     private AuthenticationService authenticationService;
 
@@ -56,6 +60,24 @@ public class AuthenticationServiceTest {
         Assertions.assertThrows(AuthenticationException.class, () -> {
             authenticationService.login(createAuthenticaticationRequest());
         });
+    }
+
+    @Test
+    public void logout_returnsBadRequestResponse_whenNonexistentUser() {
+        String token = "Bearer invalidToken";
+        Mockito.when(jwtService.rejectToken(token.substring(7)))
+                        .thenReturn(0L);
+        ResponseEntity<String> expected = new ResponseEntity<String>("still connected", HttpStatus.BAD_REQUEST);
+        Assertions.assertEquals(expected,authenticationService.logout(token));
+    }
+
+    @Test
+    public void logout_returnsOkRequestResponse_whenExistentUser() {
+        String token = "Bearer goodToken";
+        Mockito.when(jwtService.rejectToken(token.substring(7)))
+                .thenReturn(7L);
+        ResponseEntity<String> expected = new ResponseEntity<String>("disconnected", HttpStatus.OK);
+        Assertions.assertEquals(expected,authenticationService.logout(token));
     }
 
     private AuthenticationRequest createAuthenticaticationRequest() {

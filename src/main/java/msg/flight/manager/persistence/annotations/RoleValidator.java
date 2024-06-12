@@ -2,14 +2,16 @@ package msg.flight.manager.persistence.annotations;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Getter
 public class RoleValidator implements ConstraintValidator<ValidRole, String> {
 
-    Set<String> allowedNames;
+    private Set<String> allowedNames;
 
     @Override
     public void initialize(ValidRole constraintAnnotation) {
@@ -23,4 +25,5 @@ public class RoleValidator implements ConstraintValidator<ValidRole, String> {
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         return s != null && allowedNames.contains(s);
     }
+
 }

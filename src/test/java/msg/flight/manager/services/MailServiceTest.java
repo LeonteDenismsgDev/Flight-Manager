@@ -41,9 +41,18 @@ public class MailServiceTest {
     @Test
     void sendUserCreatedMessage_ThrowsExceptionMessage_whenCalled() throws Exception {
         Mockito.doThrow(new MailException("Simulated mail server failure") {
-        }).when(javaMailSender).send(createSimpleMailMessage());
+        }).when(javaMailSender).send(createSimpleMailRegisterMessage());
         assertThrows(RuntimeException.class, () -> {
             mailService.sendUserCreatedMessage(createDBUser(), "password");
+        });
+    }
+
+    @Test
+    void sendDisableNotification_ThrowsExceptionMessage_whenCalled() throws Exception {
+        Mockito.doThrow(new MailException("Simulated mail server failure") {
+        }).when(javaMailSender).send(createSimpleMailDisableMessage());
+        assertThrows(RuntimeException.class, () -> {
+            mailService.sendDisableNotification("email");
         });
     }
 
@@ -61,13 +70,22 @@ public class MailServiceTest {
                 .build();
     }
 
-    private SimpleMailMessage createSimpleMailMessage() {
+    private SimpleMailMessage createSimpleMailRegisterMessage() {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo("email");
         mailMessage.setSubject("Hello to " + "company" + " airline");
         mailMessage.setText(createMessage());
         return mailMessage;
     }
+
+    private SimpleMailMessage createSimpleMailDisableMessage() {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo("email");
+        mailMessage.setSubject("Account disabling");
+        mailMessage.setText("Your account has been disabled");
+        return mailMessage;
+    }
+
 
     private static String createMessage() {
         return "Hello firstName !\n" +

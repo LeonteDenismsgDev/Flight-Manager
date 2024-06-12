@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -13,12 +14,13 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "tokens")
-public class DBToken {
+@Document(collection = "workHours")
+public class DBUserWorkHours {
     @Id
-    private String token;
-    private String username;
-    private Boolean rejected;
-    private LocalDateTime expirationDate;
-    private LocalDateTime issuedAT;
+    private String id;
+    @Indexed(unique = true)
+    private String user;
+    private String lastLocation;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }

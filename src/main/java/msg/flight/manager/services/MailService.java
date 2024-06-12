@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 public class MailService {
 
     private final JavaMailSender javaMailSender;
-    private static final String IMAGE_PATH = "";
 
     @Autowired
     public MailService(JavaMailSender javaMailSender) {
@@ -31,6 +30,19 @@ public class MailService {
         }
     }
 
+    @Async
+    public void sendDisableNotification(String email) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(email);
+        mailMessage.setSubject("Account disabling");
+        mailMessage.setText("Your account has been disabled");
+        try {
+            javaMailSender.send(mailMessage);
+        } catch (Exception e) {
+            throw new RuntimeException("Error sending email: " + e.getMessage());
+        }
+    }
+
     private String message(DBUser user, String password) {
         return "Hello " +
                 user.getFirstName() +
@@ -43,4 +55,5 @@ public class MailService {
                 password +
                 ".\n Best regards!";
     }
+
 }

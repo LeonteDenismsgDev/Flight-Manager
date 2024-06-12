@@ -37,10 +37,10 @@ public class AuthenticationService {
 
     public ResponseEntity<String> logout(String token) {
         SecurityContextHolder.clearContext();
-            if(jwtService.rejectToken(token.substring(7)) > 0) {
-                return ResponseEntity.ok("disconnected");
-            }else{
-                return  new ResponseEntity<String>("still connected", HttpStatus.BAD_REQUEST);
-            }
+        if (jwtService.rejectToken(token.substring(7)) > 0) {
+            return ResponseEntity.ok("disconnected");
+        } else {
+            return new ResponseEntity<String>("still connected", HttpStatus.BAD_REQUEST);
+        }
     }
 }

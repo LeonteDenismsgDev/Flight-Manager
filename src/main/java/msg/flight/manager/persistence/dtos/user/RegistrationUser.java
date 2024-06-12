@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import msg.flight.manager.persistence.annotations.HasEmailContact;
 import msg.flight.manager.persistence.annotations.ValidRole;
 import msg.flight.manager.persistence.enums.Role;
 
@@ -23,6 +24,7 @@ public class RegistrationUser {
     @NotNull(message = "last name should not be  null")
     @Size(min = 1, message = "last name should have at last 1 letters")
     private String lastName;
+    @HasEmailContact(message = "user should have at last one email")
     private Map<String, String> contactData;
     private String address;
     @NotNull(message = "company should not  be null")
