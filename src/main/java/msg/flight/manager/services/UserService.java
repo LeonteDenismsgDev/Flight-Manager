@@ -3,6 +3,7 @@ package msg.flight.manager.services;
 import lombok.SneakyThrows;
 import msg.flight.manager.persistence.dtos.user.RegistrationUser;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
+import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.CrewUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.UpdatePassword;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
@@ -90,8 +91,8 @@ public class UserService {
         return ResponseEntity.ok("The account has been disabled");
     }
 
-    public ResponseEntity<CrewUpdateUser> viewUserData(String username) {
-        CrewUpdateUser user = userRepository.findDataByUsername(username);
+    public ResponseEntity<AdminUpdateUser> viewUserData(String username) {
+        AdminUpdateUser user = userRepository.findDataByUsername(username);
         if (user == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

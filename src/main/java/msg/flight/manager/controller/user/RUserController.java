@@ -1,6 +1,7 @@
 package msg.flight.manager.controller.user;
 
 import jakarta.validation.Valid;
+import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.CrewUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
@@ -22,7 +23,7 @@ public class RUserController {
 
     @CanViewUserData
     @GetMapping("/user")
-    public ResponseEntity<CrewUpdateUser> getUserData(@RequestParam(required = true) String username) {
+    public ResponseEntity<AdminUpdateUser> getUserData(@RequestParam(required = true) String username) {
         return userService.viewUserData(username);
     }
 

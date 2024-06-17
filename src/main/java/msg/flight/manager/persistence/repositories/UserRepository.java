@@ -40,9 +40,9 @@ public class UserRepository {
         return Optional.ofNullable(result);
     }
 
-    public CrewUpdateUser findDataByUsername(String username) {
+    public AdminUpdateUser findDataByUsername(String username) {
         Query query = new Query(Criteria.where("username").is(username));
-        return template.findOne(query, CrewUpdateUser.class, "users");
+        return template.findOne(query, AdminUpdateUser.class, "users");
     }
 
     public long updateUser(UpdateUserDto userDto) throws IllegalAccessException {

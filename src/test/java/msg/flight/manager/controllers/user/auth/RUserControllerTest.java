@@ -1,6 +1,5 @@
 package msg.flight.manager.controllers.user.auth;
 
-import de.flapdoodle.os.common.attributes.SystemPropertyResolver;
 import msg.flight.manager.ManagerApplication;
 import msg.flight.manager.persistence.enums.Role;
 import org.junit.Test;
@@ -11,11 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.List;
-import java.util.Map;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -47,9 +42,9 @@ public class RUserControllerTest extends SpringControllerTest {
     @Test
     public void getUserData_failsWith400_whenUserNotFound() throws Exception {
         ResultActions result = mvc.perform(get("/flymanager/view/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", token)
-                .param("username", "invalidUser"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token)
+                        .param("username", "invalidUser"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -66,7 +61,7 @@ public class RUserControllerTest extends SpringControllerTest {
         ResultActions result = mvc.perform(get("/flymanager/view/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
-                        .content(createFilterOptions("","","")))
+                        .content(createFilterOptions("", "", "")))
                 .andExpect(status().isForbidden());
     }
 
@@ -88,23 +83,23 @@ public class RUserControllerTest extends SpringControllerTest {
 
     @Test
     public void findUsers_succeeds200_whenValidRequest() throws Exception {
-        userRepository.save(creteaDBUser("username","Test"));
+        userRepository.save(creteaDBUser("username", "Test"));
         ResultActions result = mvc.perform(get("/flymanager/view/users")
                         .header("Authorization", token)
-                        .param("page","0")
-                        .param("size","6")
-                        .content(createFilterOptions("","","Test")))
+                        .param("page", "0")
+                        .param("size", "6")
+                        .content(createFilterOptions("", "", "Test")))
                 .andExpect(status().isBadRequest());
         System.out.println(result.andReturn().getResponse().getContentAsString());
     }
 
-    public String createFilterOptions(String fullName, String role,String company){
+    public String createFilterOptions(String fullName, String role, String company) {
         return String.format("{" +
                 "\"company\": \"%s\"," +
                 "\"roles\": [" +
                 "\"%s\"" +
                 "]," +
                 "\"fullName\": \"%s\"" +
-                "}", company,role,fullName);
+                "}", company, role, fullName);
     }
 }
