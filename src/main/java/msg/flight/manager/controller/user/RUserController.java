@@ -5,6 +5,7 @@ import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.CrewUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
+import msg.flight.manager.persistence.dtos.user.update.UserTableResult;
 import msg.flight.manager.services.UserService;
 import msg.flight.manager.services.annotations.CanViewUserData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,10 @@ public class RUserController {
 
     @PreAuthorize("hasAuthority('ADMINISTRATOR_ROLE') or hasAuthority('COMPANY_MANAGER_ROLE')")
     @GetMapping("/users")
-    public List<UpdateUserDto> findUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestBody(required = true) @Valid UsersFilterOptions filters) {
+    public UserTableResult findUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestBody(required = true) @Valid UsersFilterOptions filters) {
         return userService.findUsers(filters, page, size);
     }
+
 
     @PreAuthorize("hasAuthority('FLIGHT_MANAGER_ROLE')")
     @GetMapping("/availableUser")

@@ -3,10 +3,7 @@ package msg.flight.manager.services;
 import lombok.SneakyThrows;
 import msg.flight.manager.persistence.dtos.user.RegistrationUser;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
-import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
-import msg.flight.manager.persistence.dtos.user.update.CrewUpdateUser;
-import msg.flight.manager.persistence.dtos.user.update.UpdatePassword;
-import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
+import msg.flight.manager.persistence.dtos.user.update.*;
 import msg.flight.manager.persistence.enums.Role;
 import msg.flight.manager.persistence.models.user.DBUser;
 import msg.flight.manager.persistence.repositories.TokenRepository;
@@ -14,6 +11,7 @@ import msg.flight.manager.persistence.repositories.UserRepository;
 import msg.flight.manager.persistence.repositories.WorkHoursRepository;
 import msg.flight.manager.security.SecurityUser;
 import msg.flight.manager.services.utils.UserServicesUtil;
+import org.slf4j.event.KeyValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -82,13 +80,17 @@ public class UserService {
 
     @Transactional
     public ResponseEntity<String> toggleEnable(String username) {
-        String email = userRepository.toggleEnable(username);
-        if (email == null) {
+        KeyValuePair pair = userRepository.toggleEnable(username);
+        if (pair == null) {
             return new ResponseEntity<>("username not found", HttpStatus.BAD_REQUEST);
         }
-        tokenRepository.disableUser(username);
-        mailService.sendDisableNotification(email);
-        return ResponseEntity.ok("The account has been disabled");
+        if(!(boolean)pair.value) {
+            tokenRepository.disableUser(username);
+            mailService.sendDisableNotification(pair.key);
+            return ResponseEntity.ok("The account has been disabled");
+        }else{
+            return ResponseEntity.ok("The account is enable again");
+        }
     }
 
     public ResponseEntity<AdminUpdateUser> viewUserData(String username) {
@@ -99,14 +101,16 @@ public class UserService {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    public List<UpdateUserDto> findUsers(UsersFilterOptions filters, int page, int size) {
+    public UserTableResult findUsers(UsersFilterOptions filters, int page, int size) {
         SecurityUser user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Class<? extends UpdateUserDto> printClass = CrewUpdateUser.class;
         if (user.getRole().equals(Role.ADMINISTRATOR_ROLE.name())) {
+            printClass = AdminUpdateUser.class;
             filters.setCompany(".*" + filters.getCompany() + ".*");
         } else {
             filters.setCompany("^" + user.getCompany() + "$");
         }
-        return userRepository.filterUsers(PageRequest.of(page, size), filters, user.getRole(), user.getCompany());
+        return userRepository.filterUsers(PageRequest.of(page, size), filters, user.getRole(), user.getCompany()).toUserTableResult(printClass);
     }
 
     public List<String> findAvailableUsers(LocalDateTime startTime, LocalDateTime endTime, String startLocation) {
