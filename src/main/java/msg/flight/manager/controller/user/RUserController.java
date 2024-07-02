@@ -29,7 +29,7 @@ public class RUserController {
     }
 
     @PreAuthorize("hasAuthority('ADMINISTRATOR_ROLE') or hasAuthority('COMPANY_MANAGER_ROLE')")
-    @GetMapping("/users")
+    @PostMapping("/users")
     public UserTableResult findUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestBody(required = true) @Valid UsersFilterOptions filters) {
         return userService.findUsers(filters, page, size);
     }
