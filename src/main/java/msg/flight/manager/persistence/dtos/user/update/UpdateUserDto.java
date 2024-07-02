@@ -25,4 +25,5 @@ public class UpdateUserDto extends CanUpdateDTO {
     @HasEmailContact(message = "email should not be null")
     private Map<String, String> contactData;
     private String address;
+    private Boolean enabled;
 }

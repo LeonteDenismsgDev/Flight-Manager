@@ -88,7 +88,7 @@ public class UserRepository {
     }
 
     public TableResult filterUsers(PageRequest pageable, UsersFilterOptions filters, String role, String company) {
-        AggregationOperation projectConcatFields = Aggregation.project("firstName", "lastName", "contactData", "address", "company", "role")
+        AggregationOperation projectConcatFields = Aggregation.project("firstName", "lastName", "contactData", "address", "company", "role","enabled")
                 .andExpression("concat(firstName, ' ', lastName)").as("fullName");
         MatchOperation matchSearchString = Aggregation.match(Criteria.where("fullName").regex(".*" + filters.getFullName() + ".*", "i"));
         MatchOperation filedsMatchOperation = UserRepositoriesUtils.filterUserAggregation(filters, role, company);
