@@ -1,4 +1,4 @@
-package msg.flight.manager.services;
+package msg.flight.manager.services.users;
 
 import lombok.SneakyThrows;
 import msg.flight.manager.persistence.dtos.user.RegistrationUser;

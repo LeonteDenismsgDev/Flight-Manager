@@ -12,6 +12,8 @@ import msg.flight.manager.persistence.repositories.TokenRepository;
 import msg.flight.manager.persistence.repositories.UserRepository;
 import msg.flight.manager.persistence.repositories.WorkHoursRepository;
 import msg.flight.manager.security.SecurityUser;
+import msg.flight.manager.services.users.MailService;
+import msg.flight.manager.services.users.UserService;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;

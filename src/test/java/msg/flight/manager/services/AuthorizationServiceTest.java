@@ -6,6 +6,7 @@ import msg.flight.manager.persistence.dtos.user.update.CrewUpdateUser;
 import msg.flight.manager.persistence.enums.Role;
 import msg.flight.manager.persistence.repositories.UserRepository;
 import msg.flight.manager.security.SecurityUser;
+import msg.flight.manager.services.users.AuthorizationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;

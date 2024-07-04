@@ -5,7 +5,7 @@ import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.CrewUpdateUser;
 import msg.flight.manager.persistence.dtos.user.RegistrationUser;
 import msg.flight.manager.persistence.dtos.user.update.UpdatePassword;
-import msg.flight.manager.services.UserService;
+import msg.flight.manager.services.users.UserService;
 import msg.flight.manager.services.annotations.CanChangePassword;
 import msg.flight.manager.services.annotations.CanDisableUser;
 import msg.flight.manager.services.annotations.CanRegisterUser;
