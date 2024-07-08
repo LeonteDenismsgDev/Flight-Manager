@@ -1,8 +1,11 @@
 package msg.flight.manager.controller.flights;
 
+import com.mongodb.internal.bulk.DeleteRequest;
 import jakarta.validation.Valid;
+import msg.flight.manager.persistence.dtos.flights.templates.DeleteTemplate;
 import msg.flight.manager.persistence.dtos.flights.templates.RegisterTemplate;
 import msg.flight.manager.persistence.dtos.flights.TemplateTableResult;
+import msg.flight.manager.persistence.dtos.flights.templates.UpdateTemplate;
 import msg.flight.manager.services.flights.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,4 +28,13 @@ public class TemplateController {
         return templateService.viewTemplates(page, size);
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteTemplate(@Valid @RequestParam(required = true) String name){
+        return templateService.deleteTemplate(name);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<String> updateTemplate(@Valid @RequestBody(required = true)UpdateTemplate request){
+        return templateService.updateTemplate(request);
+    }
 }

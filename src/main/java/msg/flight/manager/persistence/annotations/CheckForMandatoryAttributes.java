@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CheckForMandatoryAttributes implements ConstraintValidator<DosNotHaveMandatoryAttributes, Set<TemplateAttribute>> {
+public class CheckForMandatoryAttributes implements ConstraintValidator<DoesNotHaveMandatoryAttributes, Set<TemplateAttribute>> {
     private static final List<String> mandatoryAttributes = List.of("destination", "departure", "arrivalTime", "departureTime", "plane", "crew");
 
     @Override

@@ -22,14 +22,24 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Builder
-public class RegisterTemplate {
+public class UpdateTemplate {
+
     @NotBlank(message = "The template name should not be empty")
     @NotNull(message = "The template  name should not be null")
-    private String name;
+    private String oldName;
+
+    @NotBlank(message = "The template name should not be empty")
+    @NotNull(message = "The template  name should not be null")
+    private String newName;
+
+    @NotBlank(message = "The creator name should not be empty")
+    @NotNull(message = "The creator name should not be null")
+    private String createdBy;
+
     @DoesNotHaveMandatoryAttributes(message = "Invalid attribute list")
-    private Set<TemplateAttribute> attributes;
+    private Set<TemplateAttribute> newAttributes;
     @ContainsValidRules(message = "Invalid rule structure")
     @JsonDeserialize(using = JsonObjectListDeserializer.class)
     @JsonSerialize(using = JsonObjectListSerializer.class)
-    private List<JsonObject> validations;
+    private List<JsonObject> newValidations;
 }
