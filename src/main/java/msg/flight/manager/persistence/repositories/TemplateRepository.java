@@ -1,14 +1,8 @@
 package msg.flight.manager.persistence.repositories;
 
 import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
 import msg.flight.manager.persistence.dtos.TableResult;
-import msg.flight.manager.persistence.dtos.flights.templates.RegisterTemplate;
-import msg.flight.manager.persistence.dtos.flights.templates.UpdateTemplate;
 import msg.flight.manager.persistence.models.flights.DBTemplate;
-import msg.flight.manager.persistence.models.user.DBUser;
-import msg.flight.manager.persistence.repositories.utils.TemplateRepositoryUtils;
-import msg.flight.manager.persistence.repositories.utils.UserRepositoriesUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -16,12 +10,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.FacetOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-
-import java.util.Map;
-
-import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Repository
 public class TemplateRepository {
