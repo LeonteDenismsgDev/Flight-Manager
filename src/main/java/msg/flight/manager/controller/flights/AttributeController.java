@@ -27,4 +27,9 @@ public class AttributeController {
     public List<AttributeDTO> getAttributes(@Valid @RequestBody RegisterAttribute attribute) {
         return attributeService.getAppAttributes();
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteAttribute(@Valid @RequestParam String id){
+        return attributeService.deleteAttr(id);
+    }
 }

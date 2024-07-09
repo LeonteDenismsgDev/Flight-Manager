@@ -1,5 +1,6 @@
 package msg.flight.manager.persistence.repositories;
 
+import com.mongodb.client.result.DeleteResult;
 import msg.flight.manager.persistence.dtos.flights.attributes.AttributeDTO;
 import msg.flight.manager.persistence.models.flights.DBAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,4 +27,9 @@ public class AttributesRepository {
         return template.find(query, AttributeDTO.class, "attributes");
     }
 
+    public boolean delete(String id){
+        Query query = new Query(Criteria.where("_id").is(id));
+        DeleteResult deleteResult = this.template.remove(query,"attributes");
+        return deleteResult.getDeletedCount()>0;
+    }
 }
