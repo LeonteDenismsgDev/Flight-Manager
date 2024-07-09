@@ -20,4 +20,5 @@ public class AttributeDTO {
     private Object defaultValue;
     private List<String> searchKeyWords;
     private String description;
+    private boolean editable;
 }

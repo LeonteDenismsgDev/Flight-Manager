@@ -46,14 +46,14 @@ public class AttributeService {
             attribute.setDefaultValue(registerAttribute.getDefaultValue());
         }
         attribute.setName(AttributesServiceUtils.createClassAttributeName(registerAttribute.getName()));
-        attribute.setGlobalVisibility(registerAttribute.isGlobal());
-        attribute.setRequired(registerAttribute.isRequired());
+        attribute.setGlobalVisibility(registerAttribute.getIsGlobal());
+        attribute.setRequired(registerAttribute.getIsRequired());
         attribute.setSearchKeyWords(AttributesServiceUtils.generateSearchKey(registerAttribute.getName(), registerAttribute.getType()));
         attribute.setCreatedBy(user.getUsername());
         attribute.setLabel(registerAttribute.getName());
         attribute.setDescription(registerAttribute.getDescription());
         DBAttribute savedAttribute = attributesRepository.save(attribute);
-        return new ResponseEntity<>(savedAttribute.getLabel(), HttpStatus.OK);
+        return new ResponseEntity<>("saved", HttpStatus.OK);
     }
 
     @Transactional

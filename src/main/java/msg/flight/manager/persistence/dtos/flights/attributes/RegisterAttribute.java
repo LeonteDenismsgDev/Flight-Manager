@@ -23,7 +23,7 @@ public class RegisterAttribute {
     private String description;
     private Object defaultValue;
     @NotNull(message = "The attribute visibility is not mentioned")
-    private boolean isGlobal;
+    private Boolean isGlobal;
     @NotNull(message = "The attribute require status is not mentioned")
-    private boolean isRequired;
+    private Boolean isRequired;
 }

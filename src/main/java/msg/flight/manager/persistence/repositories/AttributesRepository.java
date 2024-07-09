@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import org.w3c.dom.Attr;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,12 @@ public class AttributesRepository {
     public List<AttributeDTO> applicationAttributes(String username) {
         Criteria criteria = new Criteria().orOperator(Criteria.where("createdBy").is(username), Criteria.where("globalVisibility").is(true));
         Query query = new Query(criteria);
-        return template.find(query, AttributeDTO.class, "attributes");
+        List<AttributeDTO> results = template.find(query, AttributeDTO.class, "attributes");
+        List<DBAttribute> comparedResults = template.find(query,DBAttribute.class,"attributes");
+        for(int i = 0; i < results.size();i++){
+            results.get(i).setEditable(username.equals(comparedResults.get(i).getCreatedBy()));
+        }
+        return results;
     }
 
     public boolean delete(String id){
