@@ -70,4 +70,17 @@ public class AttributeService {
             return new ResponseEntity<>("Unable to delete attribute", HttpStatusCode.valueOf(400));
         }
     }
+
+    public ResponseEntity<String> updateAttr(String id, AttributeDTO attr){
+        try {
+            boolean updated = this.attributesRepository.update(id, attr);
+            if (updated) {
+                return new ResponseEntity<>("Attribute updated", HttpStatusCode.valueOf(200));
+            } else {
+                return new ResponseEntity<>("Unable to update attribute", HttpStatusCode.valueOf(400));
+            }
+        }catch(Exception ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatusCode.valueOf(400));
+        }
+    }
 }

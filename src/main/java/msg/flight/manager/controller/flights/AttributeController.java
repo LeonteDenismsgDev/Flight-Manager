@@ -3,6 +3,7 @@ package msg.flight.manager.controller.flights;
 import jakarta.validation.Valid;
 import msg.flight.manager.persistence.dtos.flights.attributes.AttributeDTO;
 import msg.flight.manager.persistence.dtos.flights.attributes.RegisterAttribute;
+import msg.flight.manager.persistence.models.flights.DBAttribute;
 import msg.flight.manager.services.flights.AttributeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,17 @@ public class AttributeController {
     }
 
     @GetMapping("/view")
-    public List<AttributeDTO> getAttributes(@Valid @RequestBody RegisterAttribute attribute) {
+    public List<AttributeDTO> getAttributes() {
         return attributeService.getAppAttributes();
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAttribute(@Valid @RequestParam String id){
         return attributeService.deleteAttr(id);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<String> updateAttribute(@Valid @RequestParam String id, @Valid @RequestBody(required = true) AttributeDTO updatedAttribute){
+        return attributeService.updateAttr(id,updatedAttribute);
     }
 }
