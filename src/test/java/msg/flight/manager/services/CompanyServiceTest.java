@@ -89,14 +89,6 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void viewAll_errorMessage_whenUserIsNotAdmin(){
-        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER_ROLE","Wizz Air"));
-        ResponseEntity<?> response = service.viewAll();
-        assert(response.getBody().equals("You dont have the permission to view the company list"));
-        assert(response.getStatusCode().equals(HttpStatusCode.valueOf(403)));
-    }
-
-    @Test
     public void delete_successMessage_whenUserIsAdmin(){
         Mockito.when(this.repository.remove("Wizz Air")).thenReturn(true);
         ResponseEntity<?> response = service.delete("Wizz Air");
@@ -113,37 +105,16 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void delete_errorMessage_whenUserIsNotAdmin(){
-        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER_ROLE","Wizz Air"));
-        ResponseEntity<?> response = service.delete("Wizz Air");
-        assert(response.getBody().equals("You dont have the permission to delete this company"));
-        assert(response.getStatusCode().equals(HttpStatusCode.valueOf(403)));
-    }
-
-    @Test
-    public void save_errorMessage_whenUserIsNotAdmin(){
-        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER_ROLE","Wizz Air"));
-        ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>()));
-        assert(response.getBody().equals("You dont have the permission to create a company"));
-        assert(response.getStatusCode().equals(HttpStatusCode.valueOf(403)));
-    }
-
-    @Test
     public void save_errorMessage_whenCompanyNameIsPresentAlready(){
-        ArrayList<DBCompany> results = new ArrayList<>();
-        results.add(new DBCompany("Wizz Air",10,new HashMap<String,String>()));
-        Mockito.when(this.repository.getAll()).thenReturn(results);
+        Mockito.when(this.repository.get("Wizz Air")).thenReturn(new DBCompany("Wizz Air",10,new HashMap<String,String>()));
         ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>()));
-        assert(response.getBody().equals("Company with the same name exists already"));
+        assert(response.getBody().equals("Another company with the same name exists already"));
         assert(response.getStatusCode().equals(HttpStatusCode.valueOf(400)));
     }
 
     @Test
     public void save_errorMessage_whenRepositorySaveOperationFails(){
-        ArrayList<DBCompany> results = new ArrayList<>();
-        results.add(new DBCompany("Lufthansa",10,new HashMap<String,String>()));
-        results.add(new DBCompany("Ryanair",10,new HashMap<String,String>()));
-        Mockito.when(this.repository.getAll()).thenReturn(results);
+        Mockito.when(this.repository.get("Wizz Air")).thenReturn(null);
         Mockito.when(this.repository.save(new DBCompany("Wizz Air",10,new HashMap<String,String>()))).thenReturn(null);
         ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>()));
         assert(response.getBody().equals("Unable to create the company"));
@@ -151,10 +122,7 @@ public class CompanyServiceTest {
     }
     @Test
     public void save_successMessage_whenRepositorySaveOperationSucceeds(){
-        ArrayList<DBCompany> results = new ArrayList<>();
-        results.add(new DBCompany("Lufthansa",10,new HashMap<String,String>()));
-        results.add(new DBCompany("Ryanair",10,new HashMap<String,String>()));
-        Mockito.when(this.repository.getAll()).thenReturn(results);
+        Mockito.when(this.repository.get("Wizz Air")).thenReturn(null);
         Mockito.when(this.repository.save(new DBCompany("Wizz Air",10,new HashMap<String,String>())))
                 .thenReturn(new DBCompany("Wizz Air",10,new HashMap<String,String>()));
         ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>()));
@@ -163,21 +131,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void update_errorMessage_whenUserRoleIsNotCompanyManagerAndCompanyIsNotEqual(){
-        ResponseEntity<?> response = service.update("Lufthansa",new Company("Wizz Air",10,new HashMap<String,String>()));
-        assert(response.getBody().equals("You dont have the permission to edit this company"));
-        assert(response.getStatusCode().equals(HttpStatusCode.valueOf(403)));
-    }
-
-    @Test
-    public void update_errorMessage_whenUserRoleIsNotCompanyManagerAndCompanyIsEqual(){
-        ResponseEntity<?> response = service.update("Wizz Air",new Company("Wizz Air",10,new HashMap<String,String>()));
-        assert(response.getBody().equals("You dont have the permission to edit this company"));
-        assert(response.getStatusCode().equals(HttpStatusCode.valueOf(403)));
-    }
-
-    @Test
-    public void update_errorMessage_whenUserRoleIsCompanyManagerAndCompanyIsNotEqual(){
+    public void update_errorMessage_whenCompanyIsNotEqual(){
         when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
         ResponseEntity<?> response = service.update("Lufthansa",new Company("Wizz Air",10,new HashMap<String,String>()));
@@ -186,7 +140,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void update_errorMessage_whenUserRoleIsCompanyManagerAndCompanyIsEqualButRepositoryOperationFailed(){
+    public void update_errorMessage_whenIsEqualButRepositoryOperationFailed(){
         when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
         Mockito.when(this.repository.update("Wizz Air",new DBCompany("Wizz Air",10,new HashMap<String,String>())))
@@ -197,7 +151,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void update_successMessage_whenUserRoleIsCompanyManagerAndCompanyIsEqualAndRepositoryOperationSucceded(){
+    public void update_successMessage_whenCompanyIsEqualAndRepositoryOperationSucceded(){
         when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
         Mockito.when(this.repository.update("Wizz Air",new DBCompany("Wizz Air",10,new HashMap<String,String>())))

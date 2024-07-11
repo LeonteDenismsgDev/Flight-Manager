@@ -10,6 +10,7 @@ import msg.flight.manager.persistence.repositories.TokenRepository;
 import msg.flight.manager.persistence.repositories.UserRepository;
 import msg.flight.manager.persistence.repositories.WorkHoursRepository;
 import msg.flight.manager.security.SecurityUser;
+import msg.flight.manager.services.utils.SecurityUserUtil;
 import msg.flight.manager.services.utils.UserServicesUtil;
 import org.slf4j.event.KeyValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ public class UserService {
     private TokenRepository tokenRepository;
     @Autowired
     private WorkHoursRepository workHoursRepository;
+    @Autowired
+    private SecurityUserUtil securityUser = new SecurityUserUtil();
 
     @Transactional
     public ResponseEntity<String> save(RegistrationUser registrationUser) {
@@ -102,7 +105,7 @@ public class UserService {
     }
 
     public UserTableResult findUsers(UsersFilterOptions filters, int page, int size) {
-        SecurityUser user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityUser user = securityUser.getLoggedUser();
         Class<? extends UpdateUserDto> printClass = CrewUpdateUser.class;
         if (user.getRole().equals(Role.ADMINISTRATOR_ROLE.name())) {
             printClass = AdminUpdateUser.class;

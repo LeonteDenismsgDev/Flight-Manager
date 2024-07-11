@@ -23,19 +23,12 @@ public class CompanyService {
     SecurityUserUtil securityUser = new SecurityUserUtil();
 
     public ResponseEntity<?> save(Company company){
-        SecurityUser loggedUser = securityUser.getLoggedUser();
-        if(!loggedUser.getRole().equals("ADMINISTRATOR_ROLE")){
-            return new ResponseEntity<>("You dont have the permission to create a company", HttpStatusCode.valueOf(403));
-        }
         DBCompany dbCompany = DBCompany.builder().name(company.getName().trim())
                 .fleet(company.getFleet())
                 .contactData(company.getContactData())
                 .build();
-        List<DBCompany> allCompanies = this.repository.getAll();
-        for(DBCompany fromList:allCompanies){
-            if(fromList.getName().equals(dbCompany.getName())){
-                return new ResponseEntity<>("Company with the same name exists already",HttpStatusCode.valueOf(400));
-            }
+        if(this.repository.get(company.getName())!=null){
+            return new ResponseEntity<>("Another company with the same name exists already",HttpStatusCode.valueOf(400));
         }
         if(this.repository.save(dbCompany) == null){
             return new ResponseEntity<>("Unable to create the company", HttpStatusCode.valueOf(400));
@@ -44,18 +37,10 @@ public class CompanyService {
     }
 
     public ResponseEntity<?> viewAll(){
-        SecurityUser loggedUser = securityUser.getLoggedUser();
-        if(!loggedUser.getRole().equals("ADMINISTRATOR_ROLE")){
-            return new ResponseEntity<>("You dont have the permission to view the company list",HttpStatusCode.valueOf(403));
-        }
         return new ResponseEntity<>(this.repository.getAll(), HttpStatusCode.valueOf(200));
     }
 
     public ResponseEntity<?> delete(String name){
-        SecurityUser loggedUser = securityUser.getLoggedUser();
-        if(!loggedUser.getRole().equals("ADMINISTRATOR_ROLE")){
-            return new ResponseEntity<>("You dont have the permission to delete this company", HttpStatusCode.valueOf(403));
-        }
         if(this.repository.remove(name)){
             return new ResponseEntity<>("Company deleted",HttpStatusCode.valueOf(200));
         }
@@ -64,7 +49,7 @@ public class CompanyService {
 
     public ResponseEntity<String> update(String name, Company company){
         SecurityUser loggedUser = securityUser.getLoggedUser();
-        if(!loggedUser.getCompany().equals(name) || !loggedUser.getRole().equals("COMPANY_MANAGER")){
+        if(!loggedUser.getCompany().equals(name)){
             return new ResponseEntity<>("You dont have the permission to edit this company",HttpStatusCode.valueOf(403));
         }
         DBCompany dbCompany = DBCompany.builder().name(company.getName().trim())
