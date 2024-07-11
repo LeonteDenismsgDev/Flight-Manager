@@ -5,6 +5,7 @@ import msg.flight.manager.persistence.enums.Role;
 import msg.flight.manager.persistence.models.company.DBCompany;
 import msg.flight.manager.persistence.repositories.CompanyRepository;
 import msg.flight.manager.security.SecurityUser;
+import msg.flight.manager.services.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,10 @@ public class CompanyService {
     @Autowired
     CompanyRepository repository;
 
+    SecurityUserUtil securityUser = new SecurityUserUtil();
+
     public ResponseEntity<?> save(Company company){
-        SecurityUser loggedUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityUser loggedUser = securityUser.getLoggedUser();
         if(!loggedUser.getRole().equals("ADMINISTRATOR_ROLE")){
             return new ResponseEntity<>("You dont have the permission to create a company", HttpStatusCode.valueOf(403));
         }
@@ -41,7 +44,7 @@ public class CompanyService {
     }
 
     public ResponseEntity<?> viewAll(){
-        SecurityUser loggedUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityUser loggedUser = securityUser.getLoggedUser();
         if(!loggedUser.getRole().equals("ADMINISTRATOR_ROLE")){
             return new ResponseEntity<>("You dont have the permission to view the company list",HttpStatusCode.valueOf(403));
         }
@@ -49,7 +52,7 @@ public class CompanyService {
     }
 
     public ResponseEntity<?> delete(String name){
-        SecurityUser loggedUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityUser loggedUser = securityUser.getLoggedUser();
         if(!loggedUser.getRole().equals("ADMINISTRATOR_ROLE")){
             return new ResponseEntity<>("You dont have the permission to delete this company", HttpStatusCode.valueOf(403));
         }
@@ -60,7 +63,7 @@ public class CompanyService {
     }
 
     public ResponseEntity<String> update(String name, Company company){
-        SecurityUser loggedUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityUser loggedUser = securityUser.getLoggedUser();
         if(!loggedUser.getCompany().equals(name) || !loggedUser.getRole().equals("COMPANY_MANAGER")){
             return new ResponseEntity<>("You dont have the permission to edit this company",HttpStatusCode.valueOf(403));
         }
@@ -75,7 +78,7 @@ public class CompanyService {
     }
 
     public ResponseEntity<?> viewOne(String name){
-        SecurityUser loggedUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityUser loggedUser = securityUser.getLoggedUser();
         if(!loggedUser.getCompany().equals(name) ){
             return new ResponseEntity<String>("You dont have the permission to view this company",HttpStatusCode.valueOf(403));
         }

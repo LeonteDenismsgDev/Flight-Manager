@@ -1,8 +1,10 @@
 package msg.flight.manager.services;
 
 import jakarta.mail.MessagingException;
+import msg.flight.manager.persistence.dtos.TableResult;
 import msg.flight.manager.persistence.dtos.user.RegistrationUser;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
+import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.CrewUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.UpdatePassword;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
@@ -19,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.event.KeyValuePair;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -106,7 +109,7 @@ public class UserServiceTest {
 
     @Test
     public void toggleEnable_returnsExpectedResponse_whenValidUpdateData() throws MessagingException, IllegalAccessException {
-        Mockito.when(userRepository.toggleEnable("test")).thenReturn("emailFound");
+        Mockito.when(userRepository.toggleEnable("test")).thenReturn(new KeyValuePair("emailFound","ok"));
         ResponseEntity<String> expected = ResponseEntity.ok("The account has been disabled");
         Assertions.assertEquals(expected, userService.toggleEnable("test"));
     }
@@ -120,9 +123,9 @@ public class UserServiceTest {
 
     @Test
     public void viewUserData_returnsExpectedResponse_whenValidUpdateData() throws MessagingException, IllegalAccessException {
-        CrewUpdateUser updateUser = new CrewUpdateUser();
+        AdminUpdateUser updateUser = new AdminUpdateUser();
         Mockito.when(userRepository.findDataByUsername("test")).thenReturn(updateUser);
-        ResponseEntity<CrewUpdateUser> expected = new ResponseEntity<>(updateUser, HttpStatus.OK);
+        ResponseEntity<AdminUpdateUser> expected = new ResponseEntity<>(updateUser, HttpStatus.OK);
         Assertions.assertEquals(expected, userService.viewUserData("test"));
     }
 
@@ -147,7 +150,7 @@ public class UserServiceTest {
                 Mockito.any(UsersFilterOptions.class),
                 Mockito.anyString(),
                 Mockito.anyString()
-        )).thenReturn(new ArrayList<>());
+        )).thenReturn(new TableResult());
 
         // Call the service method
         userService.findUsers(new UsersFilterOptions("test", new ArrayList<>(), "fullName"), 2, 5);
