@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@PreAuthorize("hasAuthority('FLIGHT_MANAGER_ROLE')")
+@PreAuthorize("hasAuthority('FLIGHT_MANAGER_ROLE')")
 @RequestMapping("flymanager/attribute")
 public class AttributeController {
     @Autowired
