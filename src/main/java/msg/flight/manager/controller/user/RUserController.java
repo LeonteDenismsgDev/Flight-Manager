@@ -2,11 +2,9 @@ package msg.flight.manager.controller.user;
 
 import jakarta.validation.Valid;
 import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
-import msg.flight.manager.persistence.dtos.user.update.CrewUpdateUser;
-import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
 import msg.flight.manager.persistence.dtos.user.update.UserTableResult;
-import msg.flight.manager.services.UserService;
+import msg.flight.manager.services.users.UserService;
 import msg.flight.manager.services.annotations.CanViewUserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

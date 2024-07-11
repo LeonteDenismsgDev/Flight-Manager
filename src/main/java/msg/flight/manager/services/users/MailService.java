@@ -1,4 +1,4 @@
-package msg.flight.manager.services;
+package msg.flight.manager.services.users;
 
 import msg.flight.manager.persistence.models.user.DBUser;
 import org.springframework.beans.factory.annotation.Autowired;

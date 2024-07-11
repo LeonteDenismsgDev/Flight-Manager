@@ -2,6 +2,7 @@ package msg.flight.manager.services;
 
 import msg.flight.manager.persistence.enums.Role;
 import msg.flight.manager.persistence.models.user.DBUser;
+import msg.flight.manager.services.users.MailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

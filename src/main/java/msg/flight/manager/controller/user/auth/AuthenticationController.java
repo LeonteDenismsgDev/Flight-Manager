@@ -3,7 +3,7 @@ package msg.flight.manager.controller.user.auth;
 import jakarta.validation.Valid;
 import msg.flight.manager.persistence.dtos.user.auth.AuthenticationRequest;
 import msg.flight.manager.persistence.dtos.user.auth.AuthenticationResponse;
-import msg.flight.manager.services.AuthenticationService;
+import msg.flight.manager.services.users.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
