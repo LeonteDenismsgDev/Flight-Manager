@@ -5,7 +5,7 @@ import com.mongodb.client.result.UpdateResult;
 import msg.flight.manager.persistence.dtos.flights.attributes.AttributeDTO;
 import msg.flight.manager.persistence.models.flights.DBAttribute;
 import msg.flight.manager.persistence.models.user.DBUser;
-import msg.flight.manager.persistence.repositories.utils.AttributeRepositoryUtils;
+import msg.flight.manager.persistence.repositories.utils.ObjectFieldsUtils;
 import msg.flight.manager.persistence.repositories.utils.UserRepositoriesUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class AttributesRepository {
     public boolean update(String id, AttributeDTO updatedAttribute) throws IllegalAccessException {
         Query query = new Query(Criteria.where("_id").is(new ObjectId(id)));
         Update update = new Update();
-        Map<String, Object> fields = AttributeRepositoryUtils.getFieldsValue(updatedAttribute);
+        Map<String, Object> fields = ObjectFieldsUtils.getFieldsValue(updatedAttribute);
         for (Map.Entry<String, Object> entry : fields.entrySet()) {
             if (entry.getValue() != null) {
                 update.set(entry.getKey(), entry.getValue());

@@ -1,6 +1,5 @@
 package msg.flight.manager.services.flights;
 
-import msg.flight.manager.persistence.dtos.flights.templates.DeleteTemplate;
 import msg.flight.manager.persistence.dtos.flights.templates.RegisterTemplate;
 import msg.flight.manager.persistence.dtos.flights.TemplateTableResult;
 import msg.flight.manager.persistence.dtos.flights.templates.UpdateTemplate;
@@ -8,13 +7,10 @@ import msg.flight.manager.persistence.models.flights.DBTemplate;
 import msg.flight.manager.persistence.repositories.TemplateRepository;
 import msg.flight.manager.security.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 @Service

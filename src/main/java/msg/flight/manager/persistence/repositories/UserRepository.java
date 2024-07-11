@@ -6,6 +6,7 @@ import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
 import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
 import msg.flight.manager.persistence.models.user.DBUser;
+import msg.flight.manager.persistence.repositories.utils.ObjectFieldsUtils;
 import msg.flight.manager.persistence.repositories.utils.UserRepositoriesUtils;
 import msg.flight.manager.security.SecurityUser;
 import org.slf4j.event.KeyValuePair;
@@ -46,7 +47,7 @@ public class UserRepository {
     public long updateUser(UpdateUserDto userDto) throws IllegalAccessException {
         Query query = new Query(Criteria.where("username").is(userDto.getUsername()));
         Update update = new Update();
-        Map<String, Object> fields = UserRepositoriesUtils.getFieldsValue(userDto);
+        Map<String, Object> fields = ObjectFieldsUtils.getFieldsValue(userDto);
         for (Map.Entry<String, Object> entry : fields.entrySet()) {
             if (entry.getValue() != null) {
                 update.set(entry.getKey(), entry.getValue());

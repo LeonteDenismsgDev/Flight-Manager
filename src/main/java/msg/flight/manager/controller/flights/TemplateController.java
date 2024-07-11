@@ -1,8 +1,6 @@
 package msg.flight.manager.controller.flights;
 
-import com.mongodb.internal.bulk.DeleteRequest;
 import jakarta.validation.Valid;
-import msg.flight.manager.persistence.dtos.flights.templates.DeleteTemplate;
 import msg.flight.manager.persistence.dtos.flights.templates.RegisterTemplate;
 import msg.flight.manager.persistence.dtos.flights.TemplateTableResult;
 import msg.flight.manager.persistence.dtos.flights.templates.UpdateTemplate;
