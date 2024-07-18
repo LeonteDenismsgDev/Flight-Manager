@@ -13,12 +13,9 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Company {
+public class UpdateCompanyDTO {
     @NotNull(message = "company should not  be null")
     @NotBlank(message = "company should not be blank")
     private String name;
-    @NotNull(message = "company should not  be null")
-    private int fleet;
     private Map<String, String> contactData;
-    private int crews;
 }

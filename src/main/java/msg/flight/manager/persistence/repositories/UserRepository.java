@@ -22,6 +22,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -104,5 +105,9 @@ public class UserRepository {
         );
         AggregationResults<TableResult> result = template.aggregate(aggregation,"users", TableResult.class);
         return result.getMappedResults().get(0);
+    }
+
+    public List<DBUser> getAll(){
+        return template.findAll(DBUser.class,"users");
     }
 }
