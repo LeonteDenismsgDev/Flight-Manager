@@ -53,19 +53,28 @@ public class PlaneService {
                 .map(this::dbPlane2plane)
                 .toList(), HttpStatusCode.valueOf(200));
     }
+
     public ResponseEntity<?> get(String registrationNumber){
-        return new ResponseEntity<>(dbPlane2plane(this.repository.get(registrationNumber)), HttpStatusCode.valueOf(200));
+        DBPlane result = this.repository.get(registrationNumber);
+        if(result != null) {
+            return new ResponseEntity<>(dbPlane2plane(result), HttpStatusCode.valueOf(200));
+        }
+        return new ResponseEntity<>("Unable to find plane with " + registrationNumber +" registration number",HttpStatusCode.valueOf(404));
     }
+
     public ResponseEntity<?> save(Plane plane){
-        this.repository.save(plane2dbPlane(plane));
-        return new ResponseEntity<>("Plane saved", HttpStatusCode.valueOf(200));
+        if(this.repository.save(plane2dbPlane(plane))) return new ResponseEntity<>("Plane saved", HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>("Plane with the same registration number found",HttpStatusCode.valueOf(403));
     }
+
     public ResponseEntity<?> update(String registrationNumber, Plane plane){
         this.repository.update(registrationNumber, plane2dbPlane(plane));
         return new ResponseEntity<>("Plane updated", HttpStatusCode.valueOf(200));
     }
+
     public ResponseEntity<?> delete(String registrationNumber){
-        if(this.repository.delete(registrationNumber)) return new ResponseEntity<>("", HttpStatusCode.valueOf(200));
+        if(this.repository.delete(registrationNumber)) return new ResponseEntity<>("Plane deleted", HttpStatusCode.valueOf(200));
         return new ResponseEntity<>("Unable to delete plane",HttpStatusCode.valueOf(404));
     }
+
 }

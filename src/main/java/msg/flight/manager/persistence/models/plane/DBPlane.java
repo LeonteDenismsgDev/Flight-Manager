@@ -16,10 +16,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "planes")
 public class DBPlane {
 
-    @Id
-    private long id;
+
     private String model;
-    @Indexed(unique = true)
+    @Id
     private String registrationNumber;
     private String manufacturer;
     private int manufactureYear;
