@@ -17,33 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static msg.flight.manager.services.utils.AttributesServiceUtils.parseDefaultValue;
+
 @Service
 public class AttributeService {
     @Autowired
     private AttributesRepository attributesRepository;
-
-
-
-    private void parseDefaultValue(Object value){
-        LinkedHashMap<String,Object> map = (LinkedHashMap<String, Object>) value;
-        for(Map.Entry<String,Object> field : map.entrySet()){;
-            LinkedHashMap<String,Object> _value = (LinkedHashMap<String, Object>) field.getValue();
-            if(_value.containsKey("type")&& ((String)_value.get("type")).equals("CUSTOM")){
-                parseDefaultValue(_value.get("value"));
-            }
-            else{
-                try{
-                    AttributesClasses.valueOf((String)_value.get("type"));
-                    if(!(_value.containsKey("value")&&_value.get("value")!=null)){
-                        throw new Exception("No value found for type");
-                    }
-                }catch (Exception ex){
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-
-    }
 
     @Transactional
     public ResponseEntity<String> createAttribute(RegisterAttribute registerAttribute) {
