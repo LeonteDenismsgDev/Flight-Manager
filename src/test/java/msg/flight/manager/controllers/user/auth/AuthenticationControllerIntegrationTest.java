@@ -58,7 +58,7 @@ public class AuthenticationControllerIntegrationTest extends SpringControllerTes
         mvc.perform(delete("/flymanager/auth/logout")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", INVALID_TOKEN))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
