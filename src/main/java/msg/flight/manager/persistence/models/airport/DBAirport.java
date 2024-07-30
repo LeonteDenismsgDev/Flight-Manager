@@ -18,7 +18,7 @@ public class DBAirport {
     @Id
     private String icao;
     private String iata;
-    private String name;
+    private String airportName;
     private String location;
     private Map<String,String> contactData;
 }

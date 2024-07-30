@@ -1,8 +1,11 @@
 package msg.flight.manager.controller.airport;
 
 import msg.flight.manager.persistence.dtos.airport.Airport;
+import msg.flight.manager.persistence.dtos.airport.AirportTableResult;
+import msg.flight.manager.persistence.dtos.airport.GetAirport;
 import msg.flight.manager.services.airports.AirportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -18,6 +21,17 @@ public class AirportController {
     @GetMapping("/list")
     public ResponseEntity<?> getAll(){
         return this.service.getAirports();
+    }
+
+    @GetMapping("/prepare")
+    public ResponseEntity<?> prepare(){
+        return this.service.prepare();
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> getFiltered(@RequestBody(required = true)GetAirport request){
+        AirportTableResult result = this.service.getAirportsFiltered(request);
+        return new ResponseEntity<>(result, HttpStatusCode.valueOf(200));
     }
 
     @GetMapping("/get")

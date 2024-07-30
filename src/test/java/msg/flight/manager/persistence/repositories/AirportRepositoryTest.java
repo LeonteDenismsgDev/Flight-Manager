@@ -110,7 +110,7 @@ public class AirportRepositoryTest {
                 .builder()
                 .icao(icao)
                 .iata(iata)
-                .name(name)
+                .airportName(name)
                 .location(location)
                 .contactData(contactData)
                 .build();

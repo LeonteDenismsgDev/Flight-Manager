@@ -1,9 +1,15 @@
 package msg.flight.manager.services.airports;
 
 import msg.flight.manager.persistence.dtos.airport.Airport;
+import msg.flight.manager.persistence.dtos.airport.AirportDataTableView;
+import msg.flight.manager.persistence.dtos.airport.AirportTableResult;
+import msg.flight.manager.persistence.dtos.airport.GetAirport;
 import msg.flight.manager.persistence.models.airport.DBAirport;
 import msg.flight.manager.persistence.repositories.AirportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,7 +23,7 @@ public class AirportService {
         return DBAirport.builder()
                 .icao(airport.getIcao())
                 .iata(airport.getIata())
-                .name(airport.getName())
+                .airportName(airport.getAirportName())
                 .location(airport.getLocation())
                 .contactData(airport.getContactData())
                 .build();
@@ -27,14 +33,23 @@ public class AirportService {
         return Airport.builder()
                 .icao(airport.getIcao())
                 .iata(airport.getIata())
-                .name(airport.getName())
+                .airportName(airport.getAirportName())
                 .location(airport.getLocation())
                 .contactData(airport.getContactData())
                 .build();
     }
 
+    public ResponseEntity<?> prepare(){
+        this.repository.prepare();
+        return new ResponseEntity<>("Prepared", HttpStatus.OK);
+    }
+
     public ResponseEntity<?> getAirports(){
         return new ResponseEntity<>(this.repository.get().stream().map(this::dbAirport2Airport).toList(), HttpStatusCode.valueOf(200));
+    }
+
+    public AirportTableResult getAirportsFiltered(GetAirport request){
+        return this.repository.getFilteredList(PageRequest.of(request.getPage(), request.getSize()),request).toAirportTableResult(AirportDataTableView.class);
     }
 
     public ResponseEntity<?> getAirport(String icao){

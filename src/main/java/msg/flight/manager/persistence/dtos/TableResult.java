@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import msg.flight.manager.persistence.dtos.airport.Airport;
+import msg.flight.manager.persistence.dtos.airport.AirportDataTableView;
+import msg.flight.manager.persistence.dtos.airport.AirportTableResult;
 import msg.flight.manager.persistence.dtos.flights.TemplateTableResult;
 import msg.flight.manager.persistence.dtos.flights.attributes.TemplateAttribute;
 import msg.flight.manager.persistence.dtos.flights.templates.RegisterTemplate;
@@ -54,6 +57,24 @@ public class TableResult {
                 .build();
     }
 
+    public AirportTableResult toAirportTableResult(Class <AirportDataTableView> listClass) {
+        try {
+            AirportTableResult result = AirportTableResult.builder()
+                    .max_airports(countResult.get(0).get("totalCount", Integer.class))
+                    .page(paginationResult.stream().map(doc -> {
+                        try {
+                            return convertDocumentToDto(doc, listClass);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }).toList())
+                    .build();
+            return result;
+        }catch (IndexOutOfBoundsException ex){
+            return new AirportTableResult(0,new ArrayList<>());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private <T> T convertDocumentToDto(Document document, Class<T> clazz) throws Exception {
         T dto = clazz.getDeclaredConstructor().newInstance();
@@ -73,7 +94,7 @@ public class TableResult {
                 field.set(dto, validations);
             } else {
                 Object object = document.get(field.getName(), field.getType());
-                if (field.getName().equals("username") || field.getName().equals("name")) {
+                if (field.getName().equals("username") || field.getName().equals("name") || field.getName().equals("icao")) {
                     object = document.get("_id", field.getType());
                 }
                 field.set(dto, object);
