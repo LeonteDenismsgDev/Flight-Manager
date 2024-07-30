@@ -16,10 +16,10 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CompanyRepositoryTest {
 
-    CompanyRepository repository = new CompanyRepository();
+    private CompanyRepository repository = new CompanyRepository();
 
     @Autowired
-    MongoTemplate template;
+    private MongoTemplate template;
 
     @BeforeAll
     public void setUp(){

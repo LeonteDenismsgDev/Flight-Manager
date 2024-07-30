@@ -40,10 +40,10 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CompanyServiceTest {
     @Mock
-    CompanyRepository repository;
+    private CompanyRepository repository;
 
     @InjectMocks
-    CompanyService service;
+    private CompanyService service;
 
     @Before
     public void setUp(){
