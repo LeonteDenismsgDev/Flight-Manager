@@ -9,13 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("flymanager/company")
 public class CompanyController {
     @Autowired
-    CompanyService service;
+    private CompanyService service;
 
     @PreAuthorize("hasAuthority('ADMINISTRATOR_ROLE')")
     @GetMapping("/view/all")

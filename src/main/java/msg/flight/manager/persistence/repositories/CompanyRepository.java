@@ -1,6 +1,7 @@
 package msg.flight.manager.persistence.repositories;
 
 import com.mongodb.client.result.DeleteResult;
+import lombok.Setter;
 import msg.flight.manager.persistence.models.company.DBCompany;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -10,10 +11,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Setter
 @Repository
 public class CompanyRepository {
     @Autowired
-    MongoTemplate template;
+    private MongoTemplate template;
 
     public DBCompany save(DBCompany company){
         return this.template.save(company,"companies");
@@ -29,9 +31,7 @@ public class CompanyRepository {
         if(!this.remove(name)){
             return false;
         }
-        if(this.save(company) == null){
-            return false;
-        }
+        this.save(company);
         return true;
     }
 

@@ -1,4 +1,4 @@
-package msg.flight.manager.services;
+package msg.flight.manager.services.companies;
 
 import msg.flight.manager.persistence.dtos.company.Company;
 import msg.flight.manager.persistence.dtos.company.UpdateCompanyDTO;
@@ -12,21 +12,17 @@ import msg.flight.manager.services.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class CompanyService {
     @Autowired
-    CompanyRepository repository;
+    private CompanyRepository repository;
 
     @Autowired
     UserRepository userRepository;
 
-    SecurityUserUtil securityUser = new SecurityUserUtil();
+    private SecurityUserUtil securityUser = new SecurityUserUtil();
 
     public ResponseEntity<?> save(Company company){
         DBCompany dbCompany = DBCompany.builder().name(company.getName().trim())
