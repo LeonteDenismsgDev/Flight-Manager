@@ -1,6 +1,7 @@
 package msg.flight.manager.services;
 
 import msg.flight.manager.persistence.dtos.company.Company;
+import msg.flight.manager.persistence.dtos.company.UpdateCompanyDTO;
 import msg.flight.manager.persistence.models.company.DBCompany;
 import msg.flight.manager.persistence.repositories.CompanyRepository;
 import msg.flight.manager.security.SecurityUser;
@@ -100,7 +101,7 @@ public class CompanyServiceTest {
     @Test
     public void save_errorMessage_whenCompanyNameIsPresentAlready(){
         Mockito.when(this.repository.get("Wizz Air")).thenReturn(new DBCompany("Wizz Air",10,new HashMap<String,String>()));
-        ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>()));
+        ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>(),0));
         assert(response.getBody().equals("Another company with the same name exists already"));
         assert(response.getStatusCode().equals(HttpStatusCode.valueOf(400)));
     }
@@ -109,7 +110,7 @@ public class CompanyServiceTest {
     public void save_errorMessage_whenRepositorySaveOperationFails(){
         Mockito.when(this.repository.get("Wizz Air")).thenReturn(null);
         Mockito.when(this.repository.save(new DBCompany("Wizz Air",10,new HashMap<String,String>()))).thenReturn(null);
-        ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>()));
+        ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>(),0));
         assert(response.getBody().equals("Unable to create the company"));
         assert(response.getStatusCode().equals(HttpStatusCode.valueOf(400)));
     }
@@ -118,7 +119,7 @@ public class CompanyServiceTest {
         Mockito.when(this.repository.get("Wizz Air")).thenReturn(null);
         Mockito.when(this.repository.save(new DBCompany("Wizz Air",10,new HashMap<String,String>())))
                 .thenReturn(new DBCompany("Wizz Air",10,new HashMap<String,String>()));
-        ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>()));
+        ResponseEntity<?> response = service.save(new Company("Wizz Air",10,new HashMap<String,String>(),0));
         assert(response.getBody().equals("Company created"));
         assert(response.getStatusCode().equals(HttpStatusCode.valueOf(200)));
     }
@@ -127,7 +128,7 @@ public class CompanyServiceTest {
     public void update_errorMessage_whenCompanyIsNotEqual(){
         when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
-        ResponseEntity<?> response = service.update("Lufthansa",new Company("Wizz Air",10,new HashMap<String,String>()));
+        ResponseEntity<?> response = service.update("Lufthansa",new UpdateCompanyDTO("Wizz Air",new HashMap<String,String>()));
         assert(response.getBody().equals("You dont have the permission to edit this company"));
         assert(response.getStatusCode().equals(HttpStatusCode.valueOf(403)));
     }
@@ -138,7 +139,7 @@ public class CompanyServiceTest {
                 .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
         Mockito.when(this.repository.update("Wizz Air",new DBCompany("Wizz Air",10,new HashMap<String,String>())))
                 .thenReturn(false);
-        ResponseEntity<?> response = service.update("Wizz Air",new Company("Wizz Air",10,new HashMap<String,String>()));
+        ResponseEntity<?> response = service.update("Wizz Air",new UpdateCompanyDTO("Wizz Air",new HashMap<String,String>()));
         assert(response.getBody().equals("Unable to update company"));
         assert(response.getStatusCode().equals(HttpStatusCode.valueOf(400)));
     }
@@ -149,7 +150,7 @@ public class CompanyServiceTest {
                 .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
         Mockito.when(this.repository.update("Wizz Air",new DBCompany("Wizz Air",10,new HashMap<String,String>())))
                 .thenReturn(true);
-        ResponseEntity<?> response = service.update("Wizz Air",new Company("Wizz Air",10,new HashMap<String,String>()));
+        ResponseEntity<?> response = service.update("Wizz Air",new UpdateCompanyDTO("Wizz Air",new HashMap<String,String>()));
         assert(response.getBody().equals("Company updated"));
         assert(response.getStatusCode().equals(HttpStatusCode.valueOf(200)));
     }

@@ -26,9 +26,9 @@ public class PlaneRepositoryTest {
     @BeforeAll
     public void setup(){
         this.repository.setTemplate(mongoTemplate);
-        this.mongoTemplate.save(generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>())),"planes");
-        this.mongoTemplate.save(generateDBPlane("A320","HA5465",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>())),"planes");
-        this.mongoTemplate.save(generateDBPlane("A320","HA8964",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>())),"planes");
+        this.mongoTemplate.save(generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>(),0)),"planes");
+        this.mongoTemplate.save(generateDBPlane("A320","HA5465",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>(),0)),"planes");
+        this.mongoTemplate.save(generateDBPlane("A320","HA8964",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>(),0)),"planes");
 
     }
 
@@ -43,16 +43,16 @@ public class PlaneRepositoryTest {
     @Order(1)
     public void get_listOfDBPlanes_always(){
         List<DBPlane> expected = new ArrayList<>();
-        expected.add(generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>())));
-        expected.add(generateDBPlane("A320","HA5465",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>())));
-        expected.add(generateDBPlane("A320","HA8964",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>())));
+        expected.add(generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>(),0)));
+        expected.add(generateDBPlane("A320","HA5465",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>(),0)));
+        expected.add(generateDBPlane("A320","HA8964",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>(),0)));
         Assertions.assertEquals(expected, this.repository.get());
     }
 
     @Test
     @Order(3)
     public void get_DBPlane_whenRegistrationNumberExists(){
-        DBPlane expected = generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>()));
+        DBPlane expected = generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>(),0));
         Assertions.assertEquals(expected,this.repository.get("HA3042"));
     }
 
@@ -64,7 +64,7 @@ public class PlaneRepositoryTest {
     @Test
     @Order(2)
     public void save_true_whenDBPlaneDoesntExist(){
-        DBPlane expected = generateDBPlane("A320","IT5932",2020,2000,1000,30.5f,40,13,new Company("ALITALIA",0,new HashMap<>()));
+        DBPlane expected = generateDBPlane("A320","IT5932",2020,2000,1000,30.5f,40,13,new Company("ALITALIA",0,new HashMap<>(),0));
         Assertions.assertTrue(this.repository.save(expected));
         Assertions.assertEquals(expected,this.repository.get("IT5932"));
     }
@@ -72,8 +72,8 @@ public class PlaneRepositoryTest {
     @Test
     @Order(4)
     public void save_false_whenDBPlaneExists(){
-        DBPlane existing = generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("ALITALIA",0,new HashMap<>()));
-        DBPlane previous = generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>()));
+        DBPlane existing = generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("ALITALIA",0,new HashMap<>(),0));
+        DBPlane previous = generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("Wizz Air",0,new HashMap<>(),0));
         Assertions.assertFalse(this.repository.save(existing));
         Assertions.assertEquals(previous,this.repository.get("HA3042"));
     }
@@ -93,7 +93,7 @@ public class PlaneRepositoryTest {
     @Order(5)
     public void update_RuntimeException_whenDBPlaneDoesntExist(){
         Exception thrown = Assertions.assertThrows(RuntimeException.class,()->{
-            this.repository.update("I DONT EXIST",generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("ALITALIA",0,new HashMap<>())));
+            this.repository.update("I DONT EXIST",generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("ALITALIA",0,new HashMap<>(),0)));
         });
         Assertions.assertEquals("Unable to update the plane",thrown.getMessage());
     }
@@ -101,7 +101,7 @@ public class PlaneRepositoryTest {
     @Test
     @Order(6)
     public void update_success_whenDBPlaneExists(){
-        DBPlane expected = generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("ALITALIA",0,new HashMap<>()));
+        DBPlane expected = generateDBPlane("A320","HA3042",2020,2000,1000,30.5f,40,13,new Company("ALITALIA",0,new HashMap<>(),0));
         this.repository.update("HA3042",expected);
         Assertions.assertEquals(expected,this.repository.get("HA3042"));
     }

@@ -46,21 +46,21 @@ public class PlaneServiceTest {
 
     @Test
     public void plane2dbPlane_convertsSuccessfully_whenPlaneGiven(){
-        Plane plane = generatePlane("A","A","A",1,1,new Company("",0,new HashMap<>()),1,1,1,1);
-        DBPlane expected = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>()),1,1,1,1);
+        Plane plane = generatePlane("A","A","A",1,1,new Company("",0,new HashMap<>(),0),1,1,1,1);
+        DBPlane expected = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>(),0),1,1,1,1);
         Assert.assertEquals(expected,this.service.plane2dbPlane(plane));
     }
 
     @Test
     public void dbPlane2plane_convertsSuccessfully_whenPlaneGiven(){
-        DBPlane plane = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>()),1,1,1,1);
-        Plane expected = generatePlane("A","A","A",1,1,new Company("",0,new HashMap<>()),1,1,1,1);
+        DBPlane plane = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>(),0),1,1,1,1);
+        Plane expected = generatePlane("A","A","A",1,1,new Company("",0,new HashMap<>(),0),1,1,1,1);
         Assert.assertEquals(expected,this.service.dbPlane2plane(plane));
     }
 
     @Test
     public void get_Plane_whenPlaneExists(){
-        DBPlane plane = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>()),1,1,1,1);
+        DBPlane plane = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>(),0),1,1,1,1);
         Mockito.when(this.repository.get("A")).thenReturn(plane);
         ResponseEntity<?> response = this.service.get("A");
         Assert.assertEquals(this.service.dbPlane2plane(plane),response.getBody());
@@ -77,7 +77,7 @@ public class PlaneServiceTest {
 
     @Test
     public void get_PlaneList_whenPlaneExists(){
-        DBPlane plane = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>()),1,1,1,1);
+        DBPlane plane = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>(),0),1,1,1,1);
         List<DBPlane> planeList = new ArrayList<>();
         planeList.add(plane);
         planeList.add(plane);
@@ -100,8 +100,8 @@ public class PlaneServiceTest {
 
     @Test
     public void save_true_whenPlaneDoesntExist(){
-        Plane plane = generatePlane("A","A","A",1,1,new Company("",0,new HashMap<>()),1,1,1,1);
-        DBPlane dbPlane = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>()),1,1,1,1);
+        Plane plane = generatePlane("A","A","A",1,1,new Company("",0,new HashMap<>(),0),1,1,1,1);
+        DBPlane dbPlane = generateDBPlane("A","A","A",1,1,new Company("",0,new HashMap<>(),0),1,1,1,1);
         Mockito.when(this.repository.save(dbPlane)).thenReturn(true);
         ResponseEntity<?> response = this.service.save(plane);
         Assert.assertEquals("Plane saved",response.getBody());
@@ -110,7 +110,7 @@ public class PlaneServiceTest {
 
     @Test
     public void save_false_whenPlaneExists(){
-        Plane plane = generatePlane("A","A","A",1,1,new Company("",0,new HashMap<>()),1,1,1,1);
+        Plane plane = generatePlane("A","A","A",1,1,new Company("",0,new HashMap<>(),0),1,1,1,1);
         ResponseEntity<?> response = this.service.save(plane);
         Assert.assertEquals("Plane with the same registration number found",response.getBody());
         Assert.assertEquals(HttpStatusCode.valueOf(403),response.getStatusCode());
