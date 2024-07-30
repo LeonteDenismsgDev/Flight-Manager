@@ -32,10 +32,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class PlaneServiceTest {
     @Mock
-    PlaneRepository repository;
+    private PlaneRepository repository;
 
     @InjectMocks
-    PlaneService service;
+    private PlaneService service;
 
     @Before
     public void setUp(){

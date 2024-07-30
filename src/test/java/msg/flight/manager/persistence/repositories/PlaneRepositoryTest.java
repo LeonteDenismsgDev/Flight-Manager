@@ -18,10 +18,10 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PlaneRepositoryTest {
 
-    PlaneRepository repository = new PlaneRepository();
+    private PlaneRepository repository = new PlaneRepository();
 
     @Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
     @BeforeAll
     public void setup(){
