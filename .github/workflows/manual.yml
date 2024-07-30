@@ -20,7 +20,5 @@ jobs:
         uses: crazy-max/ghaction-setup-docker@v3.3.0
       - name: Set up DB
         run: docker compose up -d
-      - name: Build
-        run: mvn build
       - name: Test
         run: mvn test
