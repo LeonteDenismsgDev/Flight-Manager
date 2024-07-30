@@ -21,6 +21,6 @@ jobs:
       - name: Set up DB
         run: docker compose up -d
       - name: Build
-        run: mvn --batch-mode package
+        run: mvn build
       - name: Test
         run: mvn test
