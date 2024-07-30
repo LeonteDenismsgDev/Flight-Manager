@@ -113,7 +113,7 @@ public class UserServiceTest {
     public void toggleEnable_returnsExpectedResponse_whenValidUpdateData() throws MessagingException, IllegalAccessException {
         Mockito.when(userRepository.toggleEnable("test")).thenReturn(new KeyValuePair("emailFound","ok"));
         ResponseEntity<String> expected = ResponseEntity.ok("The account has been disabled");
-        Assertions.assertEquals(expected, userService.toggleEnable("test"));*/
+        Assertions.assertEquals(expected, userService.toggleEnable("test"));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class UserServiceTest {
         SecurityContextHolder.setContext(context);
 
         // Use matchers for all parameters of the filterUsers method
-/*        Mockito.when(userRepository.filterUsers(
+        Mockito.when(userRepository.filterUsers(
                 Mockito.any(PageRequest.class),
                 Mockito.any(UsersFilterOptions.class),
                 Mockito.anyString(),
