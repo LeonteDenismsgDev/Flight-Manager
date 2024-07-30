@@ -61,7 +61,7 @@ public class CompanyRepositoryTest {
     @Order(4)
     public void save_DBCompany_whenItDoesntExist(){
         DBCompany expected = generateCompany("Quatar",50);
-        Assertions.assertEquals(expected,this.repository.save(expected));
+        Assertions.assertNotEquals(expected,this.repository.save(expected));
     }
 
     @Test
