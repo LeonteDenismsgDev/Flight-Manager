@@ -17,7 +17,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Set up Docker
-        uses: docker-practice/actions-setup-docker@v1
+        uses: crazy-max/ghaction-setup-docker@v3.3.0
       - name: Set up DB
         run: docker compose up -d
       - name: Build and test
