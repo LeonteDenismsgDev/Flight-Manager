@@ -2,7 +2,7 @@ package msg.flight.manager.controller.company;
 
 import jakarta.validation.Valid;
 import msg.flight.manager.persistence.dtos.company.Company;
-import msg.flight.manager.persistence.models.company.DBCompany;
+import msg.flight.manager.persistence.dtos.company.UpdateCompanyDTO;
 import msg.flight.manager.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +37,17 @@ public class CompanyController {
 
     @PreAuthorize("hasAuthority('COMPANY_MANAGER_ROLE')")
     @PostMapping("/update")
-    public ResponseEntity<?> update(@Valid @RequestBody(required = true) Company company, @Valid @RequestParam(required = true) String name){
+    public ResponseEntity<?> update(@Valid @RequestBody(required = true) UpdateCompanyDTO company, @Valid @RequestParam(required = true) String name){
         return this.service.update(name, company);
     }
 
     @GetMapping("/view")
     public ResponseEntity<?> getOne(@Valid @RequestParam(required = true) String name){
         return this.service.viewOne(name);
+    }
+
+    @GetMapping("/view/current")
+    public ResponseEntity<?> getCurrent(){
+        return this.service.getCurrent();
     }
 }
