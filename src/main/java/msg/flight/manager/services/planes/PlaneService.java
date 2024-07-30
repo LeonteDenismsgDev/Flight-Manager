@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class PlaneService {
 
     @Autowired
-    PlaneRepository repository;
+    private PlaneRepository repository;
 
     public DBPlane plane2dbPlane(Plane plane){
         return DBPlane.builder()
