@@ -19,5 +19,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+      - name: Set up Docker
+        uses: docker-practice/actions-setup-docker@v1
+      - name: Set up DB
+        run: docker compose up -d
       - name: Build and test
         run: mvn --batch-mode package
