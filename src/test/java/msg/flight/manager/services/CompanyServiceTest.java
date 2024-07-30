@@ -1,15 +1,12 @@
 package msg.flight.manager.services;
 
 import msg.flight.manager.persistence.dtos.company.Company;
-import msg.flight.manager.persistence.dtos.user.auth.AuthenticationRequest;
 import msg.flight.manager.persistence.models.company.DBCompany;
 import msg.flight.manager.persistence.repositories.CompanyRepository;
 import msg.flight.manager.security.SecurityUser;
-import msg.flight.manager.services.utils.SecurityUserUtil;
+import msg.flight.manager.services.companies.CompanyService;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,19 +15,15 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public class CompanyRepository {
     @Autowired
-    MongoTemplate template;
+    private MongoTemplate template;
 
     public DBCompany save(DBCompany company){
         return this.template.save(company,"companies");
