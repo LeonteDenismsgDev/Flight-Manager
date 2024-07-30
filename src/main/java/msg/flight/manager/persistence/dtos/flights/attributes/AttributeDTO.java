@@ -15,7 +15,8 @@ public class AttributeDTO {
     private String id;
     private String label;
     private String name;
-    private String required;
+    private boolean required;
+    private boolean globalVisibility;
     private String type;
     private Object defaultValue;
     private List<String> searchKeyWords;

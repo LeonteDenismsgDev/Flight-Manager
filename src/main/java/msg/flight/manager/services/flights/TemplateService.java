@@ -1,17 +1,24 @@
 package msg.flight.manager.services.flights;
 
+import msg.flight.manager.persistence.dtos.flights.templates.MapTemplateDTO;
 import msg.flight.manager.persistence.dtos.flights.templates.RegisterTemplate;
 import msg.flight.manager.persistence.dtos.flights.TemplateTableResult;
+import msg.flight.manager.persistence.dtos.flights.templates.TemplateDTO;
 import msg.flight.manager.persistence.dtos.flights.templates.UpdateTemplate;
 import msg.flight.manager.persistence.models.flights.DBTemplate;
 import msg.flight.manager.persistence.repositories.TemplateRepository;
 import msg.flight.manager.security.SecurityUser;
+import msg.flight.manager.services.utils.AttributesServiceUtils;
+import msg.flight.manager.services.utils.UserServicesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class TemplateService {
@@ -65,4 +72,13 @@ public class TemplateService {
         }
     }
 
+    public ResponseEntity<MapTemplateDTO> getTemplate(String name) {
+        TemplateDTO template = this.templateRepository.findTemplate(name);
+       if(template == null){
+           return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+       }
+        List<Map<String,Object>> validation = template.getValidations().stream().map(rule-> AttributesServiceUtils.stringJsonToMap(rule.getJson())).toList();
+       MapTemplateDTO templateDTO = new MapTemplateDTO(template.getName(),template.getAttributes(),validation);
+       return ResponseEntity.ok(templateDTO);
+    }
 }

@@ -27,12 +27,12 @@ public class AttributeService {
         SecurityUser user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         DBAttribute attribute = new DBAttribute();
         try {
-            AttributesClasses attributeType = AttributesClasses.valueOf(registerAttribute.getType());
-            attribute.setType(attributeType.name());
+            AttributesClasses attributeType = AttributesClasses.valueOf(registerAttribute.getType().toUpperCase());
+            attribute.setType(attributeType.name().toLowerCase());
         } catch (Exception e) {
             return new ResponseEntity<>("Invalid  attribute type", HttpStatus.BAD_REQUEST);
         }
-        if(registerAttribute.getType().equals("CUSTOM")) {
+        if(registerAttribute.getType().equalsIgnoreCase("OBJECT")) {
             if (registerAttribute.getDefaultValue() == null) {
                 return new ResponseEntity<>("You need at least one default value", HttpStatusCode.valueOf(400));
             }
@@ -43,7 +43,7 @@ public class AttributeService {
                 return new ResponseEntity<>("Default value type incorrect", HttpStatusCode.valueOf(400));
             }
         }else{
-            attribute.setDefaultValue(registerAttribute.getDefaultValue());
+                attribute.setDefaultValue(registerAttribute.getDefaultValue());
         }
         attribute.setName(AttributesServiceUtils.createClassAttributeName(registerAttribute.getName()));
         attribute.setGlobalVisibility(registerAttribute.getIsGlobal());
@@ -72,6 +72,7 @@ public class AttributeService {
     }
 
     public ResponseEntity<String> updateAttr(String id, AttributeDTO attr){
+        attr.setName(AttributesServiceUtils.createClassAttributeName(attr.getLabel()));
         try {
             boolean updated = this.attributesRepository.update(id, attr);
             if (updated) {
