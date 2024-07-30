@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 public class PlaneRepository{
     @Autowired
-    MongoTemplate template;
+    private MongoTemplate template;
 
     public boolean save(DBPlane plane){
         if(this.get(plane.getRegistrationNumber())!= null) return false;

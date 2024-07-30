@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("flymanager/plane")
 public class PlaneController {
     @Autowired
-    PlaneService service;
+    private PlaneService service;
 
     @GetMapping("/view/all")
     public ResponseEntity<?> getAll(){
