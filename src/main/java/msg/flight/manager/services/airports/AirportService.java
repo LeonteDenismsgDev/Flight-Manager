@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AirportService {
     @Autowired
-    AirportRepository repository;
+    private AirportRepository repository;
 
     public DBAirport airport2DBAirport(Airport airport){
         return DBAirport.builder()

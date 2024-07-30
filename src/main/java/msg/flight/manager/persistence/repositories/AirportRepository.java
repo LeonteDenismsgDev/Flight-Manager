@@ -31,7 +31,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.skip
 public class AirportRepository {
 
     @Autowired
-    MongoTemplate template;
+    private MongoTemplate template;
 
     public DBAirport get(String icao){
         Query query = new Query(Criteria.where("_id").is(icao));

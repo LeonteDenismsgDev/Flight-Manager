@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AirportController {
 
     @Autowired
-    AirportService service;
+    private AirportService service;
 
     @GetMapping("/list")
     public ResponseEntity<?> getAll(){
