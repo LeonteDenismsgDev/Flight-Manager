@@ -30,10 +30,10 @@ import java.util.stream.Collectors;
 @RunWith(MockitoJUnitRunner.class)
 public class AirportServiceTest {
     @InjectMocks
-    AirportService service;
+    private AirportService service;
 
     @Mock
-    AirportRepository repository;
+    private AirportRepository repository;
 
     @BeforeAll
     public void setUp(){
@@ -154,7 +154,7 @@ public class AirportServiceTest {
                 .builder()
                 .icao(icao)
                 .iata(iata)
-                .name(name)
+                .airportName(name)
                 .location(location)
                 .contactData(contactData)
                 .build();
@@ -164,7 +164,7 @@ public class AirportServiceTest {
                 .builder()
                 .icao(icao)
                 .iata(iata)
-                .name(name)
+                .airportName(name)
                 .location(location)
                 .contactData(contactData)
                 .build();

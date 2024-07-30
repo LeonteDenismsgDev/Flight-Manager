@@ -17,10 +17,10 @@ import java.util.Map;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AirportRepositoryTest {
-    AirportRepository repository = new AirportRepository();
+    private AirportRepository repository = new AirportRepository();
 
     @Autowired
-    MongoTemplate template;
+    private MongoTemplate template;
 
     @BeforeAll
     public void setUp(){

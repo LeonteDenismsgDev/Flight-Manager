@@ -17,19 +17,19 @@ public class Airport {
 
     @NotNull(message = "airport icao should not  be null")
     @NotBlank(message = "airport icao should not be blank")
-    String icao;
+    private String icao;
 
     @NotNull(message = "airport iata should not  be null")
     @NotBlank(message = "airport iata should not be blank")
-    String iata;
+    private String iata;
 
     @NotNull(message = "airport name should not  be null")
     @NotBlank(message = "airport name should not be blank")
-    String airportName;
+    private String airportName;
 
     @NotNull(message = "airport location should not  be null")
     @NotBlank(message = "airport location should not be blank")
-    String location;
+    private String location;
 
-    Map<String, String> contactData;
+    private Map<String, String> contactData;
 }
