@@ -1,5 +1,6 @@
 package msg.flight.manager.persistence.repositories;
 
+import msg.flight.manager.ManagerApplication;
 import msg.flight.manager.persistence.dtos.company.Company;
 import msg.flight.manager.persistence.models.plane.DBPlane;
 import org.junit.jupiter.api.*;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import java.util.List;
 @ActiveProfiles(profiles = {"test"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ContextConfiguration(classes = ManagerApplication.class)
 public class PlaneRepositoryTest {
 
     private PlaneRepository repository = new PlaneRepository();

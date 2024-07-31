@@ -3,7 +3,7 @@ name: Manual testing for CI/CD
 on: workflow_dispatch
 
 jobs:
-  build:
+  Build-Test:
 
     runs-on: ubuntu-latest
 
@@ -21,6 +21,6 @@ jobs:
       - name: Set up DB
         run: docker compose up -d
       - name: Build
-        run: mvn --batch-mode package
+        run: mvn compile
       - name: Test
         run: mvn test
