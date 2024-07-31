@@ -1,9 +1,14 @@
 name: Testing for CI/CD
 
 on:
+  workflow_dispatch:
+  # Allows the workflow to be manually triggered from the GitHub Actions UI.
+  push:
+    branches:
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build:
