@@ -1,6 +1,8 @@
 package msg.flight.manager.services.utils;
 
-import msg.flight.manager.persistence.dtos.flights.enums.AttributesClasses;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -50,5 +52,19 @@ public class AttributesServiceUtils {
             }
         }
 
+    }
+
+    public static Map<String,Object> stringJsonToMap(String  json){
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            JsonNode jsonNode = objectMapper.readTree(json);
+            Map<String, Object> map = objectMapper.convertValue(jsonNode, Map.class);
+            System.out.println(map);
+            return map;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return  null;
     }
 }

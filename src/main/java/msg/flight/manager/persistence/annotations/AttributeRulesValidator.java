@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AttributeRulesValidator implements ConstraintValidator<ContainsValidRules, List<JsonObject>> {
 
-    private static final List<String> validTypes = List.of("text", "number", "precisionNumber", "date", "list");
+    private static final List<String> validTypes = List.of("text", "number", "precision_number", "date", "array", "user", "company" ,"object");
 
     @Override
     public boolean isValid(List<JsonObject> templateAttributesRules, ConstraintValidatorContext constraintValidatorContext) {
@@ -24,7 +24,7 @@ public class AttributeRulesValidator implements ConstraintValidator<ContainsVali
             }
             BsonValue ruleAttribute = bsonRule.get("attribute");
             if (ruleAttribute.isString()) {
-                if (!ruleAttribute.asString().getValue().matches("^[a-z]+(\\.[a-z]+)*$")) {
+                if (!ruleAttribute.asString().getValue().matches("^[a-zA-Z]+(\\.[a-zA-Z]+)?$")) {
                     return false;
                 }
             }else{

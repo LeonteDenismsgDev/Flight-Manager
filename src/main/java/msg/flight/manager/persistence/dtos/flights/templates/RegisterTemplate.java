@@ -14,6 +14,7 @@ import msg.flight.manager.persistence.dtos.flights.attributes.TemplateAttribute;
 import msg.flight.manager.persistence.dtos.flights.serialization.JsonObjectListDeserializer;
 import msg.flight.manager.persistence.dtos.flights.serialization.JsonObjectListSerializer;
 import org.bson.json.JsonObject;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 import java.util.Set;

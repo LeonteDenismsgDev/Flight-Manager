@@ -44,7 +44,7 @@ public class StringAttributeValidator implements AttributeValidator {
                         List<String> stringValues = bsonValues.stream().filter(BsonValue::isString).map(bv -> bv.asString().getValue()).toList();
                         field.set(textValidationRules, stringValues);
                     } else {
-                        Float ruleFloatAttributeValue = attributeExtractor.extractFloatAttribute(text, flight);
+                        String ruleFloatAttributeValue = attributeExtractor.extractTextAttribute(text, flight);
                         field.set(textValidationRules, ruleFloatAttributeValue);
                     }
                 }
