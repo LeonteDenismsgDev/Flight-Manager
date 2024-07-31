@@ -144,14 +144,14 @@ public class CompanyServiceTest {
         assert(response.getStatusCode().equals(HttpStatusCode.valueOf(400)));
     }
 
-//    @Test
-//    public void update_successMessage_whenCompanyIsEqualAndRepositoryOperationSucceded(){
-//        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-//                .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
-//        Mockito.when(this.repository.update("Wizz Air",new DBCompany("Wizz Air",10,new HashMap<String,String>())))
-//                .thenReturn(true);
-//        ResponseEntity<?> response = service.update("Wizz Air",new UpdateCompanyDTO("Wizz Air",new HashMap<String,String>()));
-//        assert(response.getBody().equals("Company updated"));
-//        assert(response.getStatusCode().equals(HttpStatusCode.valueOf(200)));
-//    }
+    @Test
+    public void update_successMessage_whenCompanyIsEqualAndRepositoryOperationSucceded(){
+        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
+        Mockito.when(this.repository.update("Wizz Air",new DBCompany("Wizz Air",10,new HashMap<String,String>())))
+                .thenReturn(true);
+        ResponseEntity<?> response = service.update("Wizz Air",new UpdateCompanyDTO("Wizz Air",new HashMap<String,String>()));
+        assert(response.getBody().equals("Company updated"));
+        assert(response.getStatusCode().equals(HttpStatusCode.valueOf(200)));
+    }
 }
