@@ -2,9 +2,11 @@ package msg.flight.manager.persistence.repositories;
 
 import com.mongodb.client.result.UpdateResult;
 import msg.flight.manager.persistence.dtos.TableResult;
+import msg.flight.manager.persistence.dtos.company.Company;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
 import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
+import msg.flight.manager.persistence.models.company.DBCompany;
 import msg.flight.manager.persistence.models.user.DBUser;
 import msg.flight.manager.persistence.repositories.utils.ObjectFieldsUtils;
 import msg.flight.manager.persistence.repositories.utils.UserRepositoriesUtils;
@@ -59,8 +61,12 @@ public class UserRepository {
     }
 
     public DBUser save(DBUser user) {
+        Query query = new Query(Criteria.where("_id").is(user.getCompany()));
+        DBCompany company = template.findOne(query,DBCompany.class,"companies");
+        if(company == null){
+            throw new RuntimeException("Nonexistent company for user");
+        }
         return template.save(user, "users");
-
     }
 
 
