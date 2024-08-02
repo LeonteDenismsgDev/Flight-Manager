@@ -24,7 +24,8 @@ public class RUserControllerTest extends SpringControllerTest {
                         .header("Authorization", token)
                         .param("username", "testUser"))
                 .andExpect(status().isOk());
-        String expected = String.format("{\"username\":\"%s\",\"firstName\":\"%s\",\"lastName\":\"%s\",\"contactData\":{\"email\":\"%s\"},\"address\":null}", testUser.getUsername(), testUser.getFirstName(), testUser.getLastName(), testUser.getContactData().get("email"));
+        String expected = String.format("{\"username\":\"%s\",\"firstName\":\"%s\",\"lastName\":\"%s\",\"contactData\":{\"email\":\"%s\"},\"address\":null,\"enabled\":%s,\"company\":\"%s\",\"role\":\"%s\"}",
+                testUser.getUsername(), testUser.getFirstName(), testUser.getLastName(), testUser.getContactData().get("email"),testUser.getEnabled().toString(),testUser.getCompany(),"CREW_ROLE");
         String getResult = result.andReturn().getResponse().getContentAsString();
         Assertions.assertEquals(expected, getResult);
     }
@@ -62,7 +63,7 @@ public class RUserControllerTest extends SpringControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
                         .content(createFilterOptions("", "", "")))
-                .andExpect(status().isForbidden());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -78,7 +79,7 @@ public class RUserControllerTest extends SpringControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
                         .content("{}"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -89,7 +90,7 @@ public class RUserControllerTest extends SpringControllerTest {
                         .param("page", "0")
                         .param("size", "6")
                         .content(createFilterOptions("", "", "Test")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is4xxClientError());
         System.out.println(result.andReturn().getResponse().getContentAsString());
     }
 

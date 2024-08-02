@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static msg.flight.manager.services.utils.AttributesServiceUtils.parseDefaultValue;
+
 @Service
 public class AttributeService {
     @Autowired
@@ -37,6 +39,7 @@ public class AttributeService {
                 return new ResponseEntity<>("You need at least one default value", HttpStatusCode.valueOf(400));
             }
             if(registerAttribute.getDefaultValue().getClass() == LinkedHashMap.class) {
+                parseDefaultValue(registerAttribute.getDefaultValue());
                 attribute.setDefaultValue(registerAttribute.getDefaultValue());
             }
             else {
