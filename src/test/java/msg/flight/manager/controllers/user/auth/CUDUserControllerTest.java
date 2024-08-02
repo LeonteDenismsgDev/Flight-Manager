@@ -151,7 +151,7 @@ public class CUDUserControllerTest extends SpringControllerTest {
 
     @Test
     public void updateUserData_succeedsWith200_whenAdminUser() throws Exception {
-        userRepository.save(creteaDBUser("otherUser", "OtherTest"));
+        userRepository.save(creteaDBUser("otherUser", "Test"));
         mvc.perform(put("/flymanager/user/crew/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
@@ -255,7 +255,7 @@ public class CUDUserControllerTest extends SpringControllerTest {
 
     @Test
     public void toggleEnable_succeedsWith200_whenAdminUser() throws Exception {
-        userRepository.save(creteaDBUser("user", "test"));
+        userRepository.save(creteaDBUser("user", "Test"));
         mvc.perform(put("/flymanager/user/enable/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
