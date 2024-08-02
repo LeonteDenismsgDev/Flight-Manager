@@ -139,7 +139,6 @@ public class UserServiceTest {
 
     @Test
     public void findUsers_callsUserRepositoryWithExpectedParameters_whenLoggedInUserAdmin() throws MessagingException, IllegalAccessException {
-        // Set up the SecurityContext and Authentication
         SecurityContext context = Mockito.mock(SecurityContext.class);
         Authentication authentication = Mockito.mock(Authentication.class);
         Mockito.when(context.getAuthentication()).thenReturn(authentication);

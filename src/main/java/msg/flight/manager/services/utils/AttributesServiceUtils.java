@@ -3,6 +3,7 @@ package msg.flight.manager.services.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import msg.flight.manager.persistence.dtos.flights.enums.AttributesClasses;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;

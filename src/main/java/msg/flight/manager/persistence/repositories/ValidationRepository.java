@@ -1,6 +1,6 @@
 package msg.flight.manager.persistence.repositories;
 
-import org.bson.BsonDocument;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -9,12 +9,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ValidationRepository {
-
     @Autowired
-    private MongoTemplate template;
+    private MongoTemplate mongoTemplate;
 
-    public BsonDocument getDocument(String collection, String id) {
+    public Document getObject(String  collection, String id){
         Query query = new Query(Criteria.where("_id").is(id));
-        return template.findOne(query, BsonDocument.class, collection);
+        return mongoTemplate.findOne(query, Document.class,collection);
     }
 }

@@ -10,10 +10,11 @@ import msg.flight.manager.services.flights.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-//@PreAuthorize("hasAuthority('FLIGHT_MANAGER_ROLE')")
+@PreAuthorize("hasAuthority('FLIGHT_MANAGER_ROLE')")
 @RequestMapping("flymanager/template")
 public class TemplateController {
     @Autowired

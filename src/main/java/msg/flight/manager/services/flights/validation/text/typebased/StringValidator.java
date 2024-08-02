@@ -1,4 +1,4 @@
-package msg.flight.manager.services.flights.validation.text.validators.typebased;
+package msg.flight.manager.services.flights.validation.text.typebased;
 
 import java.util.List;
 

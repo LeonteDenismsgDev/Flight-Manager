@@ -2,20 +2,17 @@ package msg.flight.manager.services.flights.validation.extraction;
 
 import org.bson.BsonValue;
 import org.bson.json.JsonObject;
-import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.OffsetDateTime;
 import java.util.List;
 
-@Component
 public class AttributeExtractor extends AbstractAttributeExtractor {
 
     public Integer extractIntegerAttribute(String attributeLink, JsonObject jsonFlight) {
         BsonValue attributeValue = null;
         try {
-            attributeValue = extractAttributeValue(attributeLink,jsonFlight);
+            attributeValue = extractAttributeValue(attributeLink, jsonFlight);
             if (attributeValue.isNumber()) {
                 return attributeValue.asNumber().intValue();
             }
@@ -25,10 +22,10 @@ public class AttributeExtractor extends AbstractAttributeExtractor {
         }
     }
 
-    public Float extractFloatAttribute(String attributeLink,JsonObject jsonFlight){
+    public Float extractFloatAttribute(String attributeLink, JsonObject jsonFlight) {
         try {
-            BsonValue attributeValue = extractAttributeValue(attributeLink,jsonFlight);
-            if(attributeValue.isNumber()){
+            BsonValue attributeValue = extractAttributeValue(attributeLink, jsonFlight);
+            if (attributeValue.isNumber()) {
                 return (float) attributeValue.asNumber().doubleValue();
             }
             throw new RuntimeException("Invalid attribute");
@@ -37,10 +34,10 @@ public class AttributeExtractor extends AbstractAttributeExtractor {
         }
     }
 
-    public String extractTextAttribute(String attributeLink, JsonObject jsonFlight){
+    public String extractTextAttribute(String attributeLink, JsonObject jsonFlight) {
         try {
-            BsonValue attributeValue = extractAttributeValue(attributeLink,jsonFlight);
-            if(attributeValue.isString()){
+            BsonValue attributeValue = extractAttributeValue(attributeLink, jsonFlight);
+            if (attributeValue.isString()) {
                 return attributeValue.asString().getValue();
             }
             throw new RuntimeException("Invalid attribute");
@@ -49,10 +46,10 @@ public class AttributeExtractor extends AbstractAttributeExtractor {
         }
     }
 
-    public List<BsonValue> extractArrayAttribute(String attributeLink, JsonObject jsonFlight){
-        try{
-            BsonValue attributeValue = extractAttributeValue(attributeLink,jsonFlight);
-            if(attributeValue.isArray()){
+    public List<BsonValue> extractArrayAttribute(String attributeLink, JsonObject jsonFlight) {
+        try {
+            BsonValue attributeValue = extractAttributeValue(attributeLink, jsonFlight);
+            if (attributeValue.isArray()) {
                 return attributeValue.asArray().getValues();
             }
             throw new RuntimeException("Invalid attribute");
@@ -61,12 +58,20 @@ public class AttributeExtractor extends AbstractAttributeExtractor {
         }
     }
 
-    public LocalDateTime extractLocalDateTimeAttribute(String attributeLink, JsonObject jsonFlight){
-        try{
-            BsonValue attributeValue = extractAttributeValue(attributeLink,jsonFlight);
-            if(attributeValue.isDateTime()){
-                Instant instant = Instant.ofEpochMilli(attributeValue.asDateTime().getValue());
-                return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+    public BsonValue extractBsonValue(String attributeLink, JsonObject jsonFlight){
+        try {
+            return extractAttributeValue(attributeLink,jsonFlight);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public LocalDateTime extractLocalDateTimeAttribute(String attributeLink, JsonObject jsonFlight) {
+        try {
+            BsonValue attributeValue = extractAttributeValue(attributeLink, jsonFlight);
+            if (attributeValue.isString()) {
+                OffsetDateTime offsetDateTime = OffsetDateTime.parse(attributeValue.asString().getValue());
+                return offsetDateTime.toLocalDateTime();
             }
             throw new RuntimeException("Invalid attribute");
         } catch (ClassNotFoundException e) {

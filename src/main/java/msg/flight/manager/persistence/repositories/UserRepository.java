@@ -31,7 +31,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 @Repository
 public class UserRepository {
     @Autowired
-    MongoTemplate template;
+    private MongoTemplate template;
 
     public Optional<SecurityUser> findByUsername(String username) {
         Query query = new Query(Criteria.where("username").is(username));

@@ -1,67 +1,105 @@
 package msg.flight.manager.services.flights.validation;
 
-import msg.flight.manager.persistence.models.flights.DBTemplate;
-import msg.flight.manager.services.flights.validation.extraction.AttributeExtractor;
-import msg.flight.manager.services.flights.validation.number.validators.typebased.NumberRulesValidator;
-import msg.flight.manager.services.flights.validation.number.validators.typebased.NumberValidator;
-import msg.flight.manager.services.flights.validation.text.validators.typebased.StringValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import msg.flight.manager.persistence.dtos.flights.attributes.TemplateAttribute;
+import msg.flight.manager.persistence.dtos.flights.templates.TemplateDTO;
+import msg.flight.manager.persistence.dtos.flights.templates.ValidationDTO;
+import msg.flight.manager.services.flights.validation.predefinedTypes.PredefinedValidator;
 import org.bson.BsonDocument;
-import org.bson.BsonValue;
 import org.bson.json.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Field;
+import java.util.Set;
 
 @Component
 public class FlightValidator {
-    private static final NumberValidator<Integer> integerValidator = new NumberValidator<>();
-    private static final NumberValidator<Float> floatValidator = new NumberValidator<>();
-    private static final StringValidator stringValidator = new StringValidator();
     @Autowired
-    private AttributeExtractor attributeExtractor;
+    private PredefinedValidator predefinedValidator;
+    private static final AttributeValidatorFactory attributeValidatorFactory = new AttributeValidatorFactory();
 
-    public void validate(JsonObject flight, DBTemplate template) throws NoSuchFieldException, IllegalAccessException {
-        for (JsonObject validationRule : template.getValidations()) {
-            /*BsonDocument bsonDocument = validationRule.toBsonDocument();
-            String type = bsonDocument.get("type").asString().getValue();
-            String attribute = bsonDocument.get("attribute").asString().getValue();
-            String[] deepAttributes = deepListAttribute(attribute);
-            Object attr = getFieldValue(flight,deepAttributes[0]);
-            for (int index = 1; index < deepAttributes.length;index++) {
-                if(attr instanceof JsonObject){
-                    attr = ((JsonObject) attr).toBsonDocument().get(deepAttributes[index]).asObjectId().getValue();
-                }
-                attr = getFieldValue(attr, deepAttributes[index]);
+    public void validate(JsonNode flight, TemplateDTO template) {
+        if(!flight.has("destination") || !flight.has("departure") || !flight.has("arrivalTime") || !flight.has("departureTime") || !flight.has("plane") || !flight.has("crew")){
+            throw  new RuntimeException("Invalid flight. A flight should have : destination, departure, arrivalTime, departureTime, a plane and some crew!");
+        }
+        validateContainsRequiredTemplateAttributes(template.getAttributes(),flight);
+        validateRequiredParams(flight);
+        String exceptionMessage = "";
+        for (ValidationDTO validationRule : template.getValidations()) {
+            BsonDocument bsonDocument = BsonDocument.parse(validationRule.getJson());
+            String type =bsonDocument.getString("type").getValue();
+            AttributeValidator attributeValidator = attributeValidatorFactory.createValidator(type);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String flightJsonString = null;
+            try {
+                flightJsonString = objectMapper.writeValueAsString(flight);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Something  went wrong when parsing json flight");
             }
-            if (!getTypeClass(type).isInstance(attr)) {
-                throw new RuntimeException("");
-            }*/
+            JsonObject flightObject = new JsonObject(flightJsonString);
+            exceptionMessage += attributeValidator.validate(bsonDocument,flightObject);
+        }
+        if(!exceptionMessage.isEmpty()){
+            throw new RuntimeException(exceptionMessage);
         }
     }
 
-    private NumberRulesValidator getValidationRules(BsonDocument validationRule) throws IllegalAccessException {
-        NumberRulesValidator validationRules = new NumberRulesValidator();
-        Field[] rules = NumberRulesValidator.class.getDeclaredFields();
-        for (Field rule : rules) {
-            BsonValue ruleValue = validationRule.get(rule.getName());
-            rule.set(validationRules,ruleValue.toString());
+    private void validateContainsRequiredTemplateAttributes(Set<TemplateAttribute> attributes, JsonNode flight){
+        for(TemplateAttribute attribute: attributes){
+            if(attribute.isRequired() && !flight.has(attribute.getName())){
+                throw  new RuntimeException("Invalid flight for template");
+            }else {
+                JsonNode attributeType = flight.get(attribute.getName());
+                switch (attribute.getType()) {
+                    case "text":
+                        if (!attributeType.isTextual()) {
+                            throw new RuntimeException("Attribute " + attribute.getName() + " needs to be text\n");
+                        }
+                        break;
+                    case "number":
+                        if (!attributeType.isInt()) {
+                            throw new RuntimeException("Attribute " + attribute.getName() + " needs to be a number\n");
+                        }
+                        break;
+                    case "precision_number":
+                        if (!attributeType.isFloat()) {
+                            throw new RuntimeException("Attribute " + attribute.getName() + " needs to be a precision number\n");
+                        }
+                        break;
+                    case "date":
+                        if (!(attributeType.isTextual() && attributeType.asText().matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z"))) {
+                            throw new RuntimeException("Attribute " + attribute.getName() + " needs to be a date");
+                        }
+                        break;
+                    default:
+                        if (!attributeType.isObject()){
+                            throw new RuntimeException("Attribute "+ attribute.getName() + " need to be an/a " + attribute.getType() + "\n");
+                        }
+                }
+            }
         }
-        return validationRules;
     }
 
-
-    private Object getFieldValue(Object object, String filed) throws NoSuchFieldException, IllegalAccessException {
-        Field attribute = object.getClass().getDeclaredField(filed);
-        attribute.setAccessible(true);
-        return attribute.get(object);
-    }
-
-    private Class<?> getTypeClass(String type) {
-        try {
-            return Class.forName(type);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+    private void validateRequiredParams(JsonNode flight) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(predefinedValidator.checkAirport(flight,"destination"));
+        builder.append(predefinedValidator.checkAirport(flight,"departure"));
+        builder.append(predefinedValidator.checkForTime(flight,"arrivalTime"));
+        builder.append(predefinedValidator.checkForTime(flight,"departureTime"));
+        builder.append(predefinedValidator.checkForPlane(flight,"plane"));
+        builder.append(predefinedValidator.checkFlightInterval(flight,builder.toString()));
+        builder.append(predefinedValidator.checkAirports(flight,builder.toString()));
+        String errorMessage = builder.toString();
+        if(!errorMessage.isEmpty()){
+            throw  new RuntimeException(errorMessage);
+        }else{
+            builder.setLength(0);
+            builder.append(predefinedValidator.checkForCrew(flight,"crew"));
+            if(!builder.toString().isEmpty()){
+                throw new RuntimeException(builder.toString());
+            }
         }
     }
 }

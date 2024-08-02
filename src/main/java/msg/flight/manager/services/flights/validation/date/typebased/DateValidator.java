@@ -1,4 +1,4 @@
-package msg.flight.manager.services.flights.validation.date.validators.typebased;
+package msg.flight.manager.services.flights.validation.date.typebased;
 
 import java.time.LocalDateTime;
 
@@ -11,11 +11,10 @@ public class DateValidator {
         return value.isAfter(reference);
     }
 
-    public boolean isEqual(LocalDateTime value, LocalDateTime reference){
-        return value.isEqual(reference);
-    }
-
     public boolean  isInInterval(LocalDateTime value, LocalDateTime startDate, LocalDateTime endDate){
+        if(endDate.isBefore(startDate)){
+            throw  new RuntimeException("Invalid time interval");
+        }
         return value.isAfter(startDate) && value.isBefore(endDate);
     }
 }
