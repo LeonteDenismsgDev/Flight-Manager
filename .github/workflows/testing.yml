@@ -1,12 +1,17 @@
 name: Testing for CI/CD
 
 on:
+  workflow_dispatch:
+  # Allows the workflow to be manually triggered from the GitHub Actions UI.
+  push:
+    branches:
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
-  build:
+  Build-Test:
 
     runs-on: ubuntu-latest
 
@@ -20,8 +25,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Set up Docker
-        uses: docker-practice/actions-setup-docker@v1
+        uses: crazy-max/ghaction-setup-docker@v3.3.0
       - name: Set up DB
         run: docker compose up -d
-      - name: Build and test
-        run: mvn --batch-mode package
+      - name: Build
+        run: mvn compile
+      - name: Test
+        run: mvn test
