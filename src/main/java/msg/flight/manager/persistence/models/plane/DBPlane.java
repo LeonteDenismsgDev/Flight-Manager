@@ -16,10 +16,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "planes")
 public class DBPlane {
 
-
-    private String model;
     @Id
     private String registrationNumber;
+
+    private String model;
     private String manufacturer;
     private int manufactureYear;
     private int range;

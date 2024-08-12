@@ -20,6 +20,7 @@ public class PlaneRepository{
     private MongoTemplate template;
 
     public boolean save(DBPlane plane){
+        if(plane.getRegistrationNumber() == null) return false;
         if(this.get(plane.getRegistrationNumber())!= null) return false;
         this.template.save(plane,"planes");
         return true;
@@ -30,7 +31,7 @@ public class PlaneRepository{
     }
 
     public DBPlane get(String registrationNumber){
-        Query query = new Query(Criteria.where("registrationNumber").is(registrationNumber));
+        Query query = new Query(Criteria.where("_id").is(registrationNumber));
         return this.template.findOne(query,DBPlane.class,"planes");
     }
 

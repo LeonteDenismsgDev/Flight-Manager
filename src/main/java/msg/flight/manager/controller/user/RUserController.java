@@ -26,6 +26,11 @@ public class RUserController {
         return userService.viewUserData(username);
     }
 
+    @GetMapping("/current")
+    public ResponseEntity<?> getCurrentUser(){
+        return userService.getCurrent();
+    }
+
     @PreAuthorize("hasAuthority('ADMINISTRATOR_ROLE') or hasAuthority('COMPANY_MANAGER_ROLE')")
     @PostMapping("/users")
     public UserTableResult findUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestBody(required = true) @Valid UsersFilterOptions filters) {
