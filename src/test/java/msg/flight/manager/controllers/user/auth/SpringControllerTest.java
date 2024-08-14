@@ -2,7 +2,9 @@ package msg.flight.manager.controllers.user.auth;
 
 import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.enums.Role;
+import msg.flight.manager.persistence.models.company.DBCompany;
 import msg.flight.manager.persistence.models.user.DBUser;
+import msg.flight.manager.persistence.repositories.CompanyRepository;
 import msg.flight.manager.persistence.repositories.TokenRepository;
 import msg.flight.manager.persistence.repositories.UserRepository;
 import org.json.JSONObject;
@@ -27,6 +29,8 @@ public class SpringControllerTest {
     @Autowired
     protected UserRepository userRepository;  // Changed to protected
     @Autowired
+    protected CompanyRepository companyRepository;
+    @Autowired
     protected TokenRepository tokenRepository;  // Changed to protected
     protected DBUser testUser;  // Changed to protected
     protected MockMvc mvc;  // Changed to protected
@@ -41,7 +45,9 @@ public class SpringControllerTest {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-        testUser = userRepository.save(creteaDBUser("testUser", "Test"));
+        companyRepository.save(new DBCompany("Test",20,null));
+        companyRepository.save(new DBCompany("OtherTest",20,null));
+        testUser = userRepository.save(createDBUser("testUser", "Test"));
         String validLoginRequestJson = "{\"username\": \"" + testUser.getUsername() + "\", \"password\": \"" + PASSWORD + "\"}";
         ResultActions result = mvc.perform(post("/flymanager/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -54,10 +60,12 @@ public class SpringControllerTest {
     @After
     public void clearSetup() {
         userRepository.deleteUser(testUser.getUsername());
+        companyRepository.remove("Test");
+         companyRepository.remove("OtherTest");
         tokenRepository.deleteToken(token);
     }
 
-    protected DBUser creteaDBUser(String username, String company) {
+    protected DBUser createDBUser(String username, String company) {
         return DBUser.builder()
                 .firstName("Test")
                 .lastName("User")

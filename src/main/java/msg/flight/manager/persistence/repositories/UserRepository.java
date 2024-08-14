@@ -5,6 +5,7 @@ import msg.flight.manager.persistence.dtos.TableResult;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
 import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
+import msg.flight.manager.persistence.models.company.DBCompany;
 import msg.flight.manager.persistence.models.user.DBUser;
 import msg.flight.manager.persistence.repositories.utils.ObjectFieldsUtils;
 import msg.flight.manager.persistence.repositories.utils.UserRepositoriesUtils;
@@ -31,7 +32,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 @Repository
 public class UserRepository {
     @Autowired
-    MongoTemplate template;
+    private MongoTemplate template;
 
     public Optional<SecurityUser> findByUsername(String username) {
         Query query = new Query(Criteria.where("username").is(username));
@@ -59,8 +60,12 @@ public class UserRepository {
     }
 
     public DBUser save(DBUser user) {
+        Query query = new Query(Criteria.where("_id").is(user.getCompany()));
+        DBCompany company = template.findOne(query, DBCompany.class, "companies");
+        if (company == null) {
+            throw new RuntimeException("Nonexistent company for user");
+        }
         return template.save(user, "users");
-
     }
 
 
@@ -79,7 +84,7 @@ public class UserRepository {
             Update update = new Update();
             update.set("enabled", !user.getEnabled());
             template.updateFirst(query, update, DBUser.class);
-            return new KeyValuePair(user.getContactData().get("email"),!user.getEnabled());
+            return new KeyValuePair(user.getContactData().get("email"), !user.getEnabled());
         }
         return null;
     }
@@ -90,7 +95,7 @@ public class UserRepository {
     }
 
     public TableResult filterUsers(PageRequest pageable, UsersFilterOptions filters, String role, String company) {
-        AggregationOperation projectConcatFields = Aggregation.project("firstName", "lastName", "contactData", "address", "company", "role","enabled")
+        AggregationOperation projectConcatFields = Aggregation.project("firstName", "lastName", "contactData", "address", "company", "role", "enabled")
                 .andExpression("concat(firstName, ' ', lastName)").as("fullName");
         MatchOperation matchSearchString = Aggregation.match(Criteria.where("fullName").regex(".*" + filters.getFullName() + ".*", "i"));
         MatchOperation filedsMatchOperation = UserRepositoriesUtils.filterUserAggregation(filters, role, company);
@@ -103,11 +108,11 @@ public class UserRepository {
                 Aggregation.facet(Aggregation.count().as("totalCount")).as("countResult")
                         .and(skip, limit).as("paginationResult")
         );
-        AggregationResults<TableResult> result = template.aggregate(aggregation,"users", TableResult.class);
+        AggregationResults<TableResult> result = template.aggregate(aggregation, "users", TableResult.class);
         return result.getMappedResults().get(0);
     }
 
-    public List<DBUser> getAll(){
-        return template.findAll(DBUser.class,"users");
+    public List<DBUser> getAll() {
+        return template.findAll(DBUser.class, "users");
     }
 }

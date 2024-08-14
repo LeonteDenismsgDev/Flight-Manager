@@ -84,7 +84,7 @@ public class RUserControllerTest extends SpringControllerTest {
 
     @Test
     public void findUsers_succeeds200_whenValidRequest() throws Exception {
-        userRepository.save(creteaDBUser("username", "Test"));
+        userRepository.save(createDBUser("username", "Test"));
         ResultActions result = mvc.perform(get("/flymanager/view/users")
                         .header("Authorization", token)
                         .param("page", "0")

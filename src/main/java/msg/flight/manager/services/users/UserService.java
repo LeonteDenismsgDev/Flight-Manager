@@ -3,6 +3,7 @@ package msg.flight.manager.services.users;
 import lombok.SneakyThrows;
 import msg.flight.manager.persistence.dtos.user.RegistrationUser;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
+import msg.flight.manager.persistence.dtos.user.auth.AuthenticationResponse;
 import msg.flight.manager.persistence.dtos.user.update.*;
 import msg.flight.manager.persistence.enums.Role;
 import msg.flight.manager.persistence.models.user.DBUser;
@@ -16,6 +17,7 @@ import org.slf4j.event.KeyValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,6 +62,10 @@ public class UserService {
         return ResponseEntity.ok(savedUser.getUsername());
     }
 
+    public ResponseEntity<?> getCurrent(){
+        SecurityUser user = securityUser.getLoggedUser();
+        return new ResponseEntity<>(new AuthenticationResponse(user.getUsername(),"",user.getRole()), HttpStatusCode.valueOf(202));
+    }
 
     @SneakyThrows
     @Transactional

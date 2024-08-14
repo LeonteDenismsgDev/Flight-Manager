@@ -3,6 +3,8 @@ package msg.flight.manager.services.planes;
 import msg.flight.manager.persistence.dtos.plane.Plane;
 import msg.flight.manager.persistence.models.plane.DBPlane;
 import msg.flight.manager.persistence.repositories.PlaneRepository;
+import msg.flight.manager.security.SecurityUser;
+import msg.flight.manager.services.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class PlaneService {
 
+    private SecurityUserUtil securityUser = new SecurityUserUtil();
 
     @Autowired
     private PlaneRepository repository;
@@ -46,6 +49,17 @@ public class PlaneService {
                 .height(plane.getHeight())
                 .company(plane.getCompany())
                 .build();
+    }
+
+    public ResponseEntity<?> getCompanyPlanes(){
+        SecurityUser loggedUser = securityUser.getLoggedUser();
+        String company = loggedUser.getCompany();
+        List<DBPlane> raw = this.repository.get();
+        List<Plane> result = raw.stream()
+                .filter((DBPlane plane) -> plane.getCompany().getName().equals(company))
+                .map(this::dbPlane2plane)
+                .toList();
+        return new ResponseEntity<>(result,HttpStatusCode.valueOf(200));
     }
 
     public ResponseEntity<?> get(){
