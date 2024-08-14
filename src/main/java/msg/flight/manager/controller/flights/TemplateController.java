@@ -29,7 +29,7 @@ public class TemplateController {
     public TemplateTableResult viewAllTemplates(@RequestParam(required = true) int page, @RequestParam(required = true) int size) {
         return templateService.viewTemplates(page, size);
     }
-    @GetMapping(value = "/getTemplate")
+    @GetMapping("/getTemplate")
     public ResponseEntity<MapTemplateDTO> getTemplate(@RequestParam(required = true)String name){
         return templateService.getTemplate(name);
     }

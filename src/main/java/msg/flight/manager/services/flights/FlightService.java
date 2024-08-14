@@ -69,6 +69,7 @@ public class FlightService {
         return result;
     }
 
+    @Transactional
     public ResponseEntity<String> deleteFlight(String flightId) {
         long deleteCount = flightRepository.deleteFlight(flightId);
         if (deleteCount > 0) {
