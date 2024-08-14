@@ -1,6 +1,5 @@
 package msg.flight.manager.controllers.user.auth;
 
-import msg.flight.manager.persistence.dtos.company.Company;
 import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.enums.Role;
 import msg.flight.manager.persistence.models.company.DBCompany;
@@ -48,7 +47,7 @@ public class SpringControllerTest {
                 .build();
         companyRepository.save(new DBCompany("Test",20,null));
         companyRepository.save(new DBCompany("OtherTest",20,null));
-        testUser = userRepository.save(creteaDBUser("testUser", "Test"));
+        testUser = userRepository.save(createDBUser("testUser", "Test"));
         String validLoginRequestJson = "{\"username\": \"" + testUser.getUsername() + "\", \"password\": \"" + PASSWORD + "\"}";
         ResultActions result = mvc.perform(post("/flymanager/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -66,7 +65,7 @@ public class SpringControllerTest {
         tokenRepository.deleteToken(token);
     }
 
-    protected DBUser creteaDBUser(String username, String company) {
+    protected DBUser createDBUser(String username, String company) {
         return DBUser.builder()
                 .firstName("Test")
                 .lastName("User")

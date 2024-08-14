@@ -128,7 +128,7 @@ public class CUDUserControllerTest extends SpringControllerTest {
     @Test
     public void updateUserData_succeedsWith200_whenSameCompanyManager() throws Exception {
         updateDBUserRole(Role.COMPANY_MANAGER_ROLE);
-        userRepository.save(creteaDBUser("otherUser", "Test"));
+        userRepository.save(createDBUser("otherUser", "Test"));
         mvc.perform(put("/flymanager/user/crew/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
@@ -140,7 +140,7 @@ public class CUDUserControllerTest extends SpringControllerTest {
     @Test
     public void updateUserData_failsWith403_whenOtherCompanyManager() throws Exception {
         updateDBUserRole(Role.COMPANY_MANAGER_ROLE);
-        userRepository.save(creteaDBUser("otherUser", "OtherTest"));
+        userRepository.save(createDBUser("otherUser", "OtherTest"));
         mvc.perform(put("/flymanager/user/crew/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
@@ -151,7 +151,7 @@ public class CUDUserControllerTest extends SpringControllerTest {
 
     @Test
     public void updateUserData_succeedsWith200_whenAdminUser() throws Exception {
-        userRepository.save(creteaDBUser("otherUser", "Test"));
+        userRepository.save(createDBUser("otherUser", "Test"));
         mvc.perform(put("/flymanager/user/crew/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
@@ -235,7 +235,7 @@ public class CUDUserControllerTest extends SpringControllerTest {
     @Test
     public void toggleEnable_failsWith403_whenOtherCompanyManager() throws Exception {
         updateDBUserRole(Role.COMPANY_MANAGER_ROLE);
-        userRepository.save(creteaDBUser("user", "OtherTest"));
+        userRepository.save(createDBUser("user", "OtherTest"));
         mvc.perform(put("/flymanager/user/enable/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
@@ -255,7 +255,7 @@ public class CUDUserControllerTest extends SpringControllerTest {
 
     @Test
     public void toggleEnable_succeedsWith200_whenAdminUser() throws Exception {
-        userRepository.save(creteaDBUser("user", "Test"));
+        userRepository.save(createDBUser("user", "Test"));
         mvc.perform(put("/flymanager/user/enable/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
@@ -267,7 +267,7 @@ public class CUDUserControllerTest extends SpringControllerTest {
     @Test
     public void toggleEnable_succeedsWith200_whenSameManagerCompany() throws Exception {
         updateDBUserRole(Role.COMPANY_MANAGER_ROLE);
-        userRepository.save(creteaDBUser("user", "Test"));
+        userRepository.save(createDBUser("user", "Test"));
         mvc.perform(put("/flymanager/user/enable/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", token)
