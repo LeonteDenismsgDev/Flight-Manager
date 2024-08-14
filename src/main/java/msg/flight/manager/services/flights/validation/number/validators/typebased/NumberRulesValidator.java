@@ -15,26 +15,44 @@ public class NumberRulesValidator<T extends Number & Comparable<T>>{
     private List<T> values;
     private  NumberValidator<T> validator = new NumberValidator<>();
 
-    public boolean validate(T attributeValue){
-        boolean isValid = true;
+    public String validate(T attributeValue, String attribute){
+        String errMessage = "";
         if(min != null){
-            isValid &= validator.isLesThan(attributeValue, min);
+           boolean isValid = validator.isLesThan(attributeValue, min);
+           if(!isValid){
+               errMessage += attribute + " should be less than " + min +"\n";
+            }
         }
         if(mine != null){
-            isValid &= validator.isLessOrEqualsWith(attributeValue, mine);
+            boolean isValid = validator.isLessOrEqualsWith(attributeValue, mine);
+            if(!isValid){
+                errMessage += attribute + " should be less or equal with " + mine +"\n";
+            }
         }
         if(max != null){
-            isValid &= validator.isGreaterThan(attributeValue, max);
+            boolean isValid = validator.isGreaterThan(attributeValue, max);
+            if(!isValid){
+                errMessage += attribute + " should be greater than " + max +"\n";
+            }
         }
         if(maxe != null){
-            isValid &= validator.isGreaterOrEqualWith(attributeValue, maxe);
+            boolean isValid = validator.isGreaterOrEqualWith(attributeValue, maxe);
+            if(!isValid){
+                errMessage += attribute + " should be greater or equal with " + maxe +"\n";
+            }
         }
         if(equals != null){
-            isValid &= validator.isEqualWith(attributeValue, equals);
+            boolean isValid = validator.isEqualWith(attributeValue, equals);
+            if(!isValid){
+                errMessage += attribute + " should be equal with " + equals +"\n";
+            }
         }
         if(values != null){
-            isValid &= validator.isContainedIn(attributeValue,values);
+            boolean isValid = validator.isContainedIn(attributeValue,values);
+            if(!isValid){
+                errMessage += attribute + " should be a part of " + values.toString() +"\n";
+            }
         }
-        return  isValid;
+        return  errMessage;
     }
 }

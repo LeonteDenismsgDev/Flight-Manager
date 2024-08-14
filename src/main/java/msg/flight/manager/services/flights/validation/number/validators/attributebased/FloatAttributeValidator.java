@@ -6,24 +6,20 @@ import msg.flight.manager.services.flights.validation.number.validators.typebase
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
 import org.bson.json.JsonObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
-@Component
 public class FloatAttributeValidator implements AttributeValidator {
-    @Autowired
-    private AttributeExtractor attributeExtractor;
+    private static final AttributeExtractor attributeExtractor = new AttributeExtractor();
 
     @Override
-    public boolean validate(BsonDocument validationRule, JsonObject flight) {
+    public String validate(BsonDocument validationRule, JsonObject flight) {
             String attributeLink = validationRule.getString("attribute").getValue();
             Float attributeFloatValue = attributeExtractor.extractFloatAttribute(attributeLink,flight);
         try {
             NumberRulesValidator<Float> ruleValidator = extractFloatRules(validationRule,flight);
-            return ruleValidator.validate(attributeFloatValue);
+            return ruleValidator.validate(attributeFloatValue,attributeLink);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -34,22 +30,32 @@ public class FloatAttributeValidator implements AttributeValidator {
         for (Field field : numberValidationRules.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             BsonValue validationRule = validationRules.get(field.getName());
-            if(validationRule.isNumber()){
-                field.set(numberValidationRules,(float)validationRule.asNumber().doubleValue());
-            }
-            if(validationRule.isArray()){
-                List<Float> bsonValues =  validationRule.asArray().getValues().stream().filter(BsonValue::isNumber).map(bv-> (float)bv.asNumber().doubleValue()).toList();
-                field.set(numberValidationRules,bsonValues);
-            }
-            if(validationRule.isString()){
-                String  ruleAttributeLink = validationRule.asString().getValue();
-                if(field.getName().equals("values")){
-                    List<BsonValue> bsonValues =  attributeExtractor.extractArrayAttribute(ruleAttributeLink,flight);
-                    List<Float> integerValues = bsonValues.stream().filter(BsonValue::isNumber).map(bv-> (float)bv.asNumber().doubleValue()).toList();
-                    field.set(numberValidationRules,integerValues);
-                }else {
-                    Float ruleFloatAttributeValue = attributeExtractor.extractFloatAttribute(ruleAttributeLink, flight);
-                    field.set(numberValidationRules, ruleFloatAttributeValue);
+            if(validationRule != null) {
+                if (validationRule.isNumber()) {
+                    field.set(numberValidationRules, (float) validationRule.asNumber().doubleValue());
+                }
+                if (validationRule.isArray()) {
+                    List<Float> bsonValues = validationRule.asArray().getValues().stream().filter(BsonValue::isNumber).map(bv -> (float) bv.asNumber().doubleValue()).toList();
+                    if (!bsonValues.isEmpty()) {
+                        field.set(numberValidationRules, bsonValues);
+                    } else {
+                        throw new RuntimeException("Invalid array type");
+                    }
+                }
+                if (validationRule.isString()) {
+                    String ruleAttributeLink = validationRule.asString().getValue();
+                    if (field.getName().equals("values")) {
+                        List<BsonValue> bsonValues = attributeExtractor.extractArrayAttribute(ruleAttributeLink, flight);
+                        List<Float> integerValues = bsonValues.stream().filter(BsonValue::isNumber).map(bv -> (float) bv.asNumber().doubleValue()).toList();
+                        if(!integerValues.isEmpty()) {
+                            field.set(numberValidationRules, integerValues);
+                        }else{
+                            throw new RuntimeException("Invalid array type");
+                        }
+                    } else {
+                        Float ruleFloatAttributeValue = attributeExtractor.extractFloatAttribute(ruleAttributeLink, flight);
+                        field.set(numberValidationRules, ruleFloatAttributeValue);
+                    }
                 }
             }
         }

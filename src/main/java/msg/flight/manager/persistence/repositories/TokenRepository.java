@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class TokenRepository {
 
     @Autowired
-    MongoTemplate template;
+    private MongoTemplate template;
 
     public Boolean isTokenRejected(String token) {
         Query query = new Query(Criteria.where("token").is(token));

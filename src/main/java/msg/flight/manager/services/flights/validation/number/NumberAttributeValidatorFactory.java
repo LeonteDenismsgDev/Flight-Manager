@@ -6,20 +6,17 @@ import msg.flight.manager.services.flights.validation.number.validators.attribut
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
 public class NumberAttributeValidatorFactory {
-    @Autowired
-    private FloatAttributeValidator floatAttributeValidator;
-    @Autowired
-    private IntegerAttributeValidator integerAttributeValidator;
+    private static final FloatAttributeValidator floatAttributeValidator = new FloatAttributeValidator();
+    private static final IntegerAttributeValidator integerAttributeValidator = new IntegerAttributeValidator();
 
-    public AttributeValidator numberAttributeValidator(String type){
-        if(type.contains("Float")){
-            return floatAttributeValidator;
-        }
-        if(type.contains("Integer")){
+    public AttributeValidator numberAttributeValidator(String attributeType) throws RuntimeException{
+        if(attributeType.equals("number")){
             return integerAttributeValidator;
         }
-        return null;
+        if(attributeType.equals("precision_number")){
+            return floatAttributeValidator;
+        }
+       return  null;
     }
 }

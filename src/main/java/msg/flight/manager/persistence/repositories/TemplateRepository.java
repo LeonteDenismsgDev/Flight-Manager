@@ -2,10 +2,8 @@ package msg.flight.manager.persistence.repositories;
 
 import com.mongodb.client.result.DeleteResult;
 import msg.flight.manager.persistence.dtos.TableResult;
-import msg.flight.manager.persistence.dtos.flights.templates.RegisterTemplate;
 import msg.flight.manager.persistence.dtos.flights.templates.TemplateDTO;
 import msg.flight.manager.persistence.models.flights.DBTemplate;
-import org.bson.BsonDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -34,7 +32,6 @@ public class TemplateRepository {
                 .and(Aggregation.skip((long) page * size), Aggregation.limit(size)).as("paginationResult");
         Aggregation aggregation = Aggregation.newAggregation(operation);
         AggregationResults<TableResult> result = mongoTemplate.aggregate(aggregation, "templates", TableResult.class);
-        //error here if there are no templates
         try {
             return result.getMappedResults().get(0);
         }catch (Exception ex){
