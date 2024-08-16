@@ -7,6 +7,7 @@ import msg.flight.manager.persistence.models.flights.DBAttribute;
 import msg.flight.manager.persistence.repositories.AttributesRepository;
 import msg.flight.manager.security.SecurityUser;
 import msg.flight.manager.services.utils.AttributesServiceUtils;
+import msg.flight.manager.services.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -23,10 +24,12 @@ import static msg.flight.manager.services.utils.AttributesServiceUtils.parseDefa
 public class AttributeService {
     @Autowired
     private AttributesRepository attributesRepository;
+    @Autowired
+    private SecurityUserUtil securityUser;
 
     @Transactional
     public ResponseEntity<String> createAttribute(RegisterAttribute registerAttribute) {
-        SecurityUser user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityUser user = securityUser.getLoggedUser();
         DBAttribute attribute = new DBAttribute();
         try {
             AttributesClasses attributeType = AttributesClasses.valueOf(registerAttribute.getType().toUpperCase());

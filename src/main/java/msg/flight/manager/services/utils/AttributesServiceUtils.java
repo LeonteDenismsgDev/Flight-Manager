@@ -38,12 +38,12 @@ public class AttributesServiceUtils {
         LinkedHashMap<String,Object> map = (LinkedHashMap<String, Object>) value;
         for(Map.Entry<String,Object> field : map.entrySet()){;
             LinkedHashMap<String,Object> _value = (LinkedHashMap<String, Object>) field.getValue();
-            if(_value.containsKey("type")&& ((String)_value.get("type")).equals("CUSTOM")){
+            if(_value.containsKey("type")&& ((String)_value.get("type")).equalsIgnoreCase("OBJECT")){
                 parseDefaultValue(_value.get("value"));
             }
             else{
                 try{
-                    AttributesClasses.valueOf((String)_value.get("type"));
+                    AttributesClasses.valueOf(_value.get("type").toString().toUpperCase());
                     if(!(_value.containsKey("value")&&_value.get("value")!=null)){
                         throw new Exception("No value found for type");
                     }
