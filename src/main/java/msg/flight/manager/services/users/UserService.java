@@ -63,8 +63,12 @@ public class UserService {
     }
 
     public ResponseEntity<?> getCurrent(){
-        SecurityUser user = securityUser.getLoggedUser();
-        return new ResponseEntity<>(new AuthenticationResponse(user.getUsername(),"",user.getRole()), HttpStatusCode.valueOf(202));
+        try {
+            SecurityUser user = securityUser.getLoggedUser();
+            return new ResponseEntity<>(new AuthenticationResponse("",user.getUsername(),user.getRole()), HttpStatusCode.valueOf(202));
+        } catch(Exception e){
+            return new ResponseEntity<>(new AuthenticationResponse("","",""),HttpStatusCode.valueOf(202));
+        }
     }
 
     @SneakyThrows

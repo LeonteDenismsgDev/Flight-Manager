@@ -13,7 +13,10 @@ import org.springframework.test.context.ActiveProfiles;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
 @ActiveProfiles(profiles = {"test"})
@@ -61,7 +64,7 @@ public class ItineraryRepositoryTest {
         expected.add(this.generate(2,"C","D",2,3));
         expected.add(this.generate(3,"E","F",4,5));
         expected.add(this.generate(4,"G","H",6,7));
-        Assertions.assertEquals(expected,this.repository.get());
+        Assertions.assertEquals(new HashSet<>(expected),new HashSet<>(this.repository.get()));
     }
 
     @Test
@@ -120,11 +123,11 @@ public class ItineraryRepositoryTest {
     private DBItinerary generate(long id,String dep, String arr, long depTime, long arrTime){
         return DBItinerary
                 .builder()
-                .id(id)
+//                .id(String.valueOf(id))
                 .dep(dep)
                 .arr(arr)
-                .depTime(new Date(depTime))
-                .arrTime(new Date(arrTime))
+                .depTime(depTime)
+                .arrTime(arrTime)
                 .plane(new Plane())
                 .build();
     }

@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -19,10 +20,28 @@ import java.util.Date;
 public class DBItinerary {
 
     @Id
-    private long id;
+    private String id;
     private String dep;
     private String arr;
-    private Date depTime;
-    private Date arrTime;
+    //Times are stored in milliseconds
+    private long depTime;
+    private long arrTime;
     private Plane plane;
+
+    @Override
+    public boolean equals(Object o){
+        if(o == null || getClass() != o.getClass()) return false;
+        if(this == o) return true;
+        DBItinerary that = (DBItinerary) o;
+        return dep.equals(that.getDep()) &&
+                arr.equals(that.getArr()) &&
+                depTime == that.getDepTime() &&
+                arrTime == that.getArrTime() &&
+                plane == that.getPlane();
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(dep,arr,depTime,arrTime,plane);
+    }
 }
