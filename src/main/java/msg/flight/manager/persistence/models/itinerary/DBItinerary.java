@@ -27,21 +27,4 @@ public class DBItinerary {
     private long depTime;
     private long arrTime;
     private Plane plane;
-
-    @Override
-    public boolean equals(Object o){
-        if(o == null || getClass() != o.getClass()) return false;
-        if(this == o) return true;
-        DBItinerary that = (DBItinerary) o;
-        return dep.equals(that.getDep()) &&
-                arr.equals(that.getArr()) &&
-                depTime == that.getDepTime() &&
-                arrTime == that.getArrTime() &&
-                plane == that.getPlane();
-    }
-
-    @Override
-    public int hashCode(){
-        return Objects.hash(dep,arr,depTime,arrTime,plane);
-    }
 }

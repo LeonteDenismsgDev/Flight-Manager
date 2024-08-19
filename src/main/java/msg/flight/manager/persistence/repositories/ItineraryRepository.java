@@ -26,12 +26,13 @@ public class ItineraryRepository {
         return this.template.findAll(DBItinerary.class,"itineraries");
     }
 
-    public DBItinerary get(long id){
+    public DBItinerary get(String id){
         Query query = new Query(Criteria.where("_id").is(id));
-        return this.template.findOne(query,DBItinerary.class,"itineraries");
+        DBItinerary it = this.template.findOne(query,DBItinerary.class,"itineraries");
+        return it;
     }
 
-    public boolean update(long id, DBItinerary itinerary){
+    public boolean update(String id, DBItinerary itinerary){
         if(this.get(id) == null) return false;
         DBItinerary old = this.get(id);
         if(!this.delete(id)) return false;
@@ -43,7 +44,7 @@ public class ItineraryRepository {
         }
     }
 
-    public boolean delete(long id){
+    public boolean delete(String id){
         Query query = new Query(Criteria.where("_id").is(id));
         DeleteResult result = this.template.remove(query, DBItinerary.class,"itineraries");
         return result.getDeletedCount() > 0;
