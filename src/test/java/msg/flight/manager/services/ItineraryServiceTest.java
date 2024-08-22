@@ -103,6 +103,13 @@ public class ItineraryServiceTest {
     }
 
     @Test
+    public void save_failMessage_whenItineraryNull(){
+        ResponseEntity<?> response = this.service.save(null);
+        Assertions.assertEquals("Null itinerary not permitted",response.getBody());
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
+    }
+
+    @Test
     public void save_failMessage_whenItineraryAlreadyThere(){
         DBItinerary dbitinerary = generateDB("1","a","b",1,2);
         Itinerary itinerary = generate("1","a","b",1,2);
@@ -144,6 +151,57 @@ public class ItineraryServiceTest {
         when(this.repository.delete("1")).thenReturn(true);
         ResponseEntity<?> response = this.service.delete("1");
         Assertions.assertEquals("Itinerary deleted",response.getBody());
+        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+    }
+
+    @Test
+    public void update_failMessage_whenItineraryNotExistent(){
+        when(this.repository.get("1")).thenReturn(null);
+        Itinerary itinerary = generate("1","a","b",1,2);
+        ResponseEntity<?> response = this.service.update("1",itinerary);
+        Assertions.assertEquals("Itinerary with given ID doesnt exist",response.getBody());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
+    }
+
+    @Test
+    public void update_failMessage_whenItineraryNull(){
+        ResponseEntity<?> response = this.service.update("1",null);
+        Assertions.assertEquals("Null itinerary not permitted",response.getBody());
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
+    }
+
+    @Test
+    public void update_failMessage_whenDeletionFails(){
+        DBItinerary dbItinerary = generateDB("1","a","b",1,2);
+        Itinerary itinerary = generate("1","a","b",1,2);
+        when(this.repository.get("1")).thenReturn(dbItinerary);
+        when(this.repository.delete("1")).thenReturn(false);
+        ResponseEntity<?> response = this.service.update("1",itinerary);
+        Assertions.assertEquals("Internal error occoured while deleting the itinerary",response.getBody());
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
+    }
+
+    @Test
+    public void update_failMessage_whenSaveFails(){
+        DBItinerary dbItinerary = generateDB("1","a","b",1,2);
+        Itinerary itinerary = generate("1","a","b",1,2);
+        when(this.repository.get("1")).thenReturn(dbItinerary);
+        when(this.repository.delete("1")).thenReturn(true);
+        when(this.repository.save(dbItinerary)).thenReturn(null);
+        ResponseEntity<?> response = this.service.update("1",itinerary);
+        Assertions.assertEquals("Internal server error occoured while updating the itinerary",response.getBody());
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
+    }
+
+    @Test
+    public void update_successMessage_whenUpdateSucceeds(){
+        DBItinerary dbItinerary = generateDB("1","a","b",1,2);
+        Itinerary itinerary = generate("1","a","b",1,2);
+        when(this.repository.get("1")).thenReturn(dbItinerary);
+        when(this.repository.delete("1")).thenReturn(true);
+        when(this.repository.save(dbItinerary)).thenReturn(dbItinerary);
+        ResponseEntity<?> response = this.service.update("1",itinerary);
+        Assertions.assertEquals("Itinerary updated",response.getBody());
         Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
     }
 

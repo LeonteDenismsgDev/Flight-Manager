@@ -55,12 +55,14 @@ public class ItineraryService {
     }
 
     public ResponseEntity<?> save(Itinerary itinerary){
+        if(itinerary == null) return new ResponseEntity<>("Null itinerary not permitted",HttpStatus.INTERNAL_SERVER_ERROR);
         if(repository.get(itinerary.getID()) != null) return new ResponseEntity<>("Itinerary already registered", HttpStatus.NOT_ACCEPTABLE);
         repository.save(itinerary2DBItinerary(itinerary));
         return new ResponseEntity<>("Saved",HttpStatusCode.valueOf(200));
     }
 
     public ResponseEntity<?> update(String id, Itinerary itinerary){
+        if(itinerary == null) return new ResponseEntity<>("Null itinerary not permitted",HttpStatus.INTERNAL_SERVER_ERROR);
         if(this.repository.get(id) == null) return new ResponseEntity<>("Itinerary with given ID doesnt exist",HttpStatus.NOT_FOUND);
         if(!this.repository.delete(id)) return new ResponseEntity<>("Internal error occoured while deleting the itinerary",HttpStatus.INTERNAL_SERVER_ERROR);
         if(this.repository.save(itinerary2DBItinerary(itinerary)) == null) return new ResponseEntity<>("Internal server error occoured while updating the itinerary", HttpStatus.INTERNAL_SERVER_ERROR);
