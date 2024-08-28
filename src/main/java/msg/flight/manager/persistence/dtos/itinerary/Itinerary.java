@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import msg.flight.manager.persistence.dtos.plane.Plane;
+import msg.flight.manager.persistence.utils.TimeHelper;
+
+import java.sql.Date;
 
 @Data
 @Builder
@@ -14,9 +16,6 @@ import msg.flight.manager.persistence.dtos.plane.Plane;
 @AllArgsConstructor
 public class Itinerary {
 
-
-    @NotNull(message =  "ID should not  be null")
-    @NotBlank(message = "ID should not be blank")
     private String ID;
 
     @NotNull(message =  "departure should not  be null")
@@ -29,13 +28,19 @@ public class Itinerary {
 
     @NotNull(message =  "departure time should not  be null")
     @NotBlank(message = "departure time should not be blank")
-    private long departureTime;
+    private TimeHelper departureTime;
 
     @NotNull(message =  "arrival time should not  be null")
     @NotBlank(message = "arrival time should not be blank")
-    private long arrivalTime;
+    private TimeHelper arrivalTime;
 
-    @NotNull(message =  "plane should not  be null")
-    @NotBlank(message = "plane should not be blank")
-    private Plane plane;
+    private short lateDepartureMinutes = 0;
+
+    private short lateArrivalMinutes = 0;
+
+    @NotNull(message =  "Flight Number should not  be null")
+    @NotBlank(message = "Flight Number should not be blank")
+    private String flightNumber;
+
+    private String crewNumber;
 }

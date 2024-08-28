@@ -4,6 +4,7 @@ import msg.flight.manager.persistence.dtos.itinerary.Itinerary;
 import msg.flight.manager.persistence.dtos.plane.Plane;
 import msg.flight.manager.persistence.models.itinerary.DBItinerary;
 import msg.flight.manager.persistence.repositories.ItineraryRepository;
+import msg.flight.manager.persistence.utils.TimeHelper;
 import msg.flight.manager.services.itineraries.ItineraryService;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -22,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -129,32 +131,6 @@ public class ItineraryServiceTest {
     }
 
     @Test
-    public void delete_failMessage_whenItineraryDoesntExist(){
-        when(this.repository.get("1")).thenReturn(null);
-        ResponseEntity<?> response = this.service.delete("1");
-        Assertions.assertEquals("Itinerary not found",response.getBody());
-        Assertions.assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
-    }
-
-    @Test
-    public void delete_failMessage_whenDeletionFails(){
-        when(this.repository.get("1")).thenReturn(generateDB("1","a","b",1,2));
-        when(this.repository.delete("1")).thenReturn(false);
-        ResponseEntity<?> response = this.service.delete("1");
-        Assertions.assertEquals("Internal error occoured while deleting the itinerary",response.getBody());
-        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
-    }
-
-    @Test
-    public void delete_successMessage_whenDeletionSuccedes(){
-        when(this.repository.get("1")).thenReturn(generateDB("1","a","b",1,2));
-        when(this.repository.delete("1")).thenReturn(true);
-        ResponseEntity<?> response = this.service.delete("1");
-        Assertions.assertEquals("Itinerary deleted",response.getBody());
-        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
-    }
-
-    @Test
     public void update_failMessage_whenItineraryNotExistent(){
         when(this.repository.get("1")).thenReturn(null);
         Itinerary itinerary = generate("1","a","b",1,2);
@@ -205,7 +181,7 @@ public class ItineraryServiceTest {
         Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
     }
 
-    private DBItinerary generateDB(String id,String dep, String arr, long depTime, long arrTime){
+    private DBItinerary generateDB(String id, String dep, String arr, TimeHelper depTime, TimeHelper arrTime){
         return DBItinerary
                 .builder()
                 .id(id)
@@ -213,11 +189,10 @@ public class ItineraryServiceTest {
                 .arr(arr)
                 .depTime(depTime)
                 .arrTime(arrTime)
-                .plane(new Plane())
                 .build();
     }
 
-    private Itinerary generate(String id,String dep, String arr, long depTime, long arrTime){
+    private Itinerary generate(String id,String dep, String arr, TimeHelper depTime, TimeHelper arrTime){
         return Itinerary
                 .builder()
                 .ID(id)
@@ -225,7 +200,6 @@ public class ItineraryServiceTest {
                 .arrival(arr)
                 .departureTime(depTime)
                 .arrivalTime(arrTime)
-                .plane(new Plane())
                 .build();
     }
 }

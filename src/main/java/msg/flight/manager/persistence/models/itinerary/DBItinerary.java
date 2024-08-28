@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import msg.flight.manager.persistence.dtos.plane.Plane;
+import msg.flight.manager.persistence.utils.TimeHelper;
 import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -23,8 +24,10 @@ public class DBItinerary {
     private String id;
     private String dep;
     private String arr;
-    //Times are stored in milliseconds
-    private long depTime;
-    private long arrTime;
-    private Plane plane;
+    private TimeHelper depTime;
+    private TimeHelper arrTime;
+    private String flightNumber;
+    private String crewNumber;
+    private short lateDeparture;
+    private short lateArrival;
 }

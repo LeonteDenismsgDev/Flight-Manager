@@ -3,6 +3,7 @@ package msg.flight.manager.services.itineraries;
 import msg.flight.manager.persistence.dtos.itinerary.Itinerary;
 import msg.flight.manager.persistence.models.itinerary.DBItinerary;
 import msg.flight.manager.persistence.repositories.ItineraryRepository;
+import msg.flight.manager.services.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -16,6 +17,8 @@ public class ItineraryService {
     @Autowired
     ItineraryRepository repository;
 
+    private final SecurityUserUtil securityUser = new SecurityUserUtil();
+
     public Itinerary dbItinerary2Itinerary(DBItinerary itinerary){
         return Itinerary
                 .builder()
@@ -24,7 +27,10 @@ public class ItineraryService {
                 .arrival(itinerary.getArr())
                 .departureTime(itinerary.getDepTime())
                 .arrivalTime(itinerary.getArrTime())
-                .plane(itinerary.getPlane())
+                .lateArrivalMinutes(itinerary.getLateArrival())
+                .lateDepartureMinutes(itinerary.getLateDeparture())
+                .flightNumber(itinerary.getFlightNumber())
+                .crewNumber(itinerary.getCrewNumber())
                 .build();
     }
 
@@ -36,8 +42,15 @@ public class ItineraryService {
                 .arr(itinerary.getArrival())
                 .depTime(itinerary.getDepartureTime())
                 .arrTime(itinerary.getArrivalTime())
-                .plane(itinerary.getPlane())
+                .lateArrival(itinerary.getLateArrivalMinutes())
+                .lateDeparture(itinerary.getLateDepartureMinutes())
+                .flightNumber(itinerary.getFlightNumber())
+                .crewNumber(itinerary.getCrewNumber())
                 .build();
+    }
+
+    private boolean checkIfUserMatches(DBItinerary itinerary){
+        return this.securityUser.getLoggedUser().getUsername().equals(itinerary.getCrewNumber());
     }
 
     public ResponseEntity<?> get(String id){
@@ -49,6 +62,7 @@ public class ItineraryService {
     public ResponseEntity<?> get(){
         List<Itinerary> result = this.repository.get()
                 .stream()
+                .filter(this::checkIfUserMatches)
                 .map(this::dbItinerary2Itinerary)
                 .toList();
         return new ResponseEntity<>(result,HttpStatusCode.valueOf(200));
@@ -57,6 +71,7 @@ public class ItineraryService {
     public ResponseEntity<?> save(Itinerary itinerary){
         if(itinerary == null) return new ResponseEntity<>("Null itinerary not permitted",HttpStatus.INTERNAL_SERVER_ERROR);
         if(repository.get(itinerary.getID()) != null) return new ResponseEntity<>("Itinerary already registered", HttpStatus.NOT_ACCEPTABLE);
+        itinerary.setID(itinerary.getFlightNumber()+itinerary.getCrewNumber());
         repository.save(itinerary2DBItinerary(itinerary));
         return new ResponseEntity<>("Saved",HttpStatusCode.valueOf(200));
     }
@@ -69,9 +84,4 @@ public class ItineraryService {
         return new ResponseEntity<>("Itinerary updated",HttpStatus.OK);
     }
 
-    public ResponseEntity<?> delete(String id){
-        if(repository.get(id) == null) return new ResponseEntity<>("Itinerary not found", HttpStatus.NOT_FOUND);
-        if(repository.delete(id)) return new ResponseEntity<>("Itinerary deleted",HttpStatusCode.valueOf(200));
-        return new ResponseEntity<>("Internal error occoured while deleting the itinerary",HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 }
