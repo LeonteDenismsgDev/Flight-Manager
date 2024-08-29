@@ -65,6 +65,12 @@ public class PlaneService {
         return new ResponseEntity<>(result,HttpStatusCode.valueOf(200));
     }
 
+    public ResponseEntity<?> getFilteredCompanyPlanes(GetPlane request){
+        SecurityUser loggedUser = securityUser.getLoggedUser();
+        String company = loggedUser.getCompany();
+        return new ResponseEntity<>(this.repository.getFilteredByCompanyAlso(PageRequest.of(request.getPage(),request.getSize()),request,company).toPlaneTableResult(PlaneDataTableView.class),HttpStatusCode.valueOf(200));
+    }
+
     public ResponseEntity<?> get(){
         return new ResponseEntity<>(this.repository.get()
                 .stream()

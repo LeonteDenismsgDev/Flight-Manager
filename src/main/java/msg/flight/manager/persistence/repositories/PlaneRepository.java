@@ -74,4 +74,23 @@ public class PlaneRepository{
         return result.getMappedResults().get(0);
     }
 
+    public TableResult getFilteredByCompanyAlso(PageRequest pageable, GetPlane request, String company){
+        AggregationOperation projectConcatFields = Aggregation.project("registrationNumber","manufacturer", "model","manufactureYear","range","cruisingSpeed","wingspan","length","height","company");
+        MatchOperation matchSearchString = Aggregation.match(Criteria.where("_id")
+                    .regex(".*" + request.getFilter() + ".*","i"));
+        MatchOperation matchCompany = Aggregation.match(Criteria.where("company.name").is(company));
+        MatchOperation fieldsMatchOperation = PlaneRepositoriesUtils.filterPlaneAggregations(request.getFilter());
+        AggregationOperation skip = skip((long) pageable.getPageNumber()*pageable.getPageSize());
+        AggregationOperation limit= Aggregation.limit(pageable.getPageSize());
+        Aggregation aggregation = newAggregation(
+                fieldsMatchOperation,
+                projectConcatFields,
+                matchSearchString,
+                matchCompany,
+                Aggregation.facet(Aggregation.count().as("totalCount")).as("countResult").and(skip,limit).as("paginationResult")
+        );
+        AggregationResults<TableResult> result = template.aggregate(aggregation,"planes", TableResult.class);
+        return result.getMappedResults().get(0);
+    }
+
 }

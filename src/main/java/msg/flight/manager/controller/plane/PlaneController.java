@@ -27,6 +27,11 @@ public class PlaneController {
         return this.service.getCompanyPlanes();
     }
 
+    @PostMapping("/view/company")
+    public ResponseEntity<?> getFilteredCompanyPlanes(@RequestBody(required = true) GetPlane request){
+        return this.service.getFilteredCompanyPlanes(request);
+    }
+
     @GetMapping("/view")
     public ResponseEntity<?> getOne(@RequestParam(required = true) String registrationNumber){
         return this.service.get(registrationNumber);
