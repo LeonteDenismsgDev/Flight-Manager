@@ -1,10 +1,12 @@
 package msg.flight.manager.services.itineraries;
 
+import msg.flight.manager.persistence.dtos.itinerary.GetItineraries;
 import msg.flight.manager.persistence.dtos.itinerary.Itinerary;
 import msg.flight.manager.persistence.models.itinerary.DBItinerary;
 import msg.flight.manager.persistence.repositories.ItineraryRepository;
 import msg.flight.manager.services.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ public class ItineraryService {
 
     private final SecurityUserUtil securityUser = new SecurityUserUtil();
 
-    public Itinerary dbItinerary2Itinerary(DBItinerary itinerary){
+    public static Itinerary dbItinerary2Itinerary(DBItinerary itinerary){
         return Itinerary
                 .builder()
                 .ID(itinerary.getId())
@@ -56,14 +58,14 @@ public class ItineraryService {
     public ResponseEntity<?> get(String id){
         DBItinerary dbItinerary = this.repository.get(id);
         if(dbItinerary == null) return new ResponseEntity<String>("Itinerary with given ID not found",HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(this.dbItinerary2Itinerary(dbItinerary),HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(dbItinerary2Itinerary(dbItinerary),HttpStatusCode.valueOf(200));
     }
 
     public ResponseEntity<?> get(){
         List<Itinerary> result = this.repository.get()
                 .stream()
                 .filter(this::checkIfUserMatches)
-                .map(this::dbItinerary2Itinerary)
+                .map(ItineraryService::dbItinerary2Itinerary)
                 .toList();
         return new ResponseEntity<>(result,HttpStatusCode.valueOf(200));
     }
@@ -84,4 +86,8 @@ public class ItineraryService {
         return new ResponseEntity<>("Itinerary updated",HttpStatus.OK);
     }
 
+    public ResponseEntity<?> getFiltered(GetItineraries request){
+        String crewID = this.securityUser.getLoggedUser().getUsername();
+        return new ResponseEntity<>(this.repository.getFiltered(PageRequest.of(request.getPage(),request.getSize()),request, crewID).toItineraryTableResult(Itinerary.class),HttpStatusCode.valueOf(200));
+    }
 }

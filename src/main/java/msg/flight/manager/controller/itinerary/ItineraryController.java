@@ -1,5 +1,6 @@
 package msg.flight.manager.controller.itinerary;
 
+import msg.flight.manager.persistence.dtos.itinerary.GetItineraries;
 import msg.flight.manager.persistence.dtos.itinerary.Itinerary;
 import msg.flight.manager.services.itineraries.ItineraryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ public class ItineraryController {
         return this.service.get(id);
     }
 
+    @PostMapping("/view/filtered")
+    public ResponseEntity<?> filter(@RequestBody (required = true)GetItineraries request){
+        return this.service.getFiltered(request);
+    }
+
 //    @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody(required = true)Itinerary itinerary){
         return this.service.save(itinerary);
@@ -32,5 +38,4 @@ public class ItineraryController {
     public ResponseEntity<?> update(@RequestBody(required = true)Itinerary itinerary,@RequestParam(required = true)String id){
         return this.service.update(id, itinerary);
     }
-
 }

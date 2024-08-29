@@ -10,8 +10,13 @@ import msg.flight.manager.persistence.dtos.airport.AirportTableResult;
 import msg.flight.manager.persistence.dtos.flights.TemplateTableResult;
 import msg.flight.manager.persistence.dtos.flights.attributes.TemplateAttribute;
 import msg.flight.manager.persistence.dtos.flights.templates.RegisterTemplate;
+import msg.flight.manager.persistence.dtos.itinerary.Itinerary;
+import msg.flight.manager.persistence.dtos.itinerary.ItineraryDataView;
+import msg.flight.manager.persistence.dtos.itinerary.ItineraryTableResult;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
 import msg.flight.manager.persistence.dtos.user.update.UserTableResult;
+import msg.flight.manager.persistence.models.itinerary.DBItinerary;
+import msg.flight.manager.services.itineraries.ItineraryService;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.json.JsonObject;
@@ -75,6 +80,26 @@ public class TableResult {
         }
     }
 
+    public ItineraryTableResult toItineraryTableResult(Class <Itinerary> listClass){
+        try{
+            ItineraryTableResult result = ItineraryTableResult.builder()
+                    .max_itineraries(countResult
+                            .get(0).get("totalCount",Integer.class))
+                    .page(new ArrayList<Itinerary>( paginationResult.stream().map(doc ->{
+                        try{
+                            return convertDocumentToDto(doc, DBItinerary.class);
+                        }catch (Exception e){
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .map(ItineraryService::dbItinerary2Itinerary).toList()))
+                    .build();
+            return result;
+        }catch (IndexOutOfBoundsException ex){
+            return new ItineraryTableResult(0,new ArrayList<>());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private <T> T convertDocumentToDto(Document document, Class<T> clazz) throws Exception {
         T dto = clazz.getDeclaredConstructor().newInstance();
@@ -94,7 +119,7 @@ public class TableResult {
                 field.set(dto, validations);
             } else {
                 Object object = document.get(field.getName(), field.getType());
-                if (field.getName().equals("username") || field.getName().equals("name") || field.getName().equals("icao")) {
+                if (field.getName().equals("username") || field.getName().equals("name") || field.getName().equals("icao") || field.getName().equals("id")) {
                     object = document.get("_id", field.getType());
                 }
                 field.set(dto, object);
