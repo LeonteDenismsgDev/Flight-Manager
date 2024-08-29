@@ -1,11 +1,14 @@
 package msg.flight.manager.services.planes;
 
+import msg.flight.manager.persistence.dtos.plane.GetPlane;
 import msg.flight.manager.persistence.dtos.plane.Plane;
+import msg.flight.manager.persistence.dtos.plane.PlaneDataTableView;
 import msg.flight.manager.persistence.models.plane.DBPlane;
 import msg.flight.manager.persistence.repositories.PlaneRepository;
 import msg.flight.manager.security.SecurityUser;
 import msg.flight.manager.services.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -67,6 +70,10 @@ public class PlaneService {
                 .stream()
                 .map(this::dbPlane2plane)
                 .toList(), HttpStatusCode.valueOf(200));
+    }
+
+    public ResponseEntity<?> getFiltered(GetPlane request){
+        return new ResponseEntity<>(this.repository.getFiltered(PageRequest.of(request.getPage(),request.getSize()),request).toPlaneTableResult(PlaneDataTableView.class),HttpStatusCode.valueOf(200));
     }
 
     public ResponseEntity<?> get(String registrationNumber){
