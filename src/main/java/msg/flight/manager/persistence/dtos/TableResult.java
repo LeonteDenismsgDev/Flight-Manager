@@ -1,5 +1,6 @@
 package msg.flight.manager.persistence.dtos;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,12 +8,16 @@ import lombok.NoArgsConstructor;
 import msg.flight.manager.persistence.dtos.airport.Airport;
 import msg.flight.manager.persistence.dtos.airport.AirportDataTableView;
 import msg.flight.manager.persistence.dtos.airport.AirportTableResult;
+import msg.flight.manager.persistence.dtos.company.Company;
 import msg.flight.manager.persistence.dtos.flights.TemplateTableResult;
 import msg.flight.manager.persistence.dtos.flights.attributes.TemplateAttribute;
 import msg.flight.manager.persistence.dtos.flights.templates.RegisterTemplate;
 import msg.flight.manager.persistence.dtos.itinerary.Itinerary;
 import msg.flight.manager.persistence.dtos.itinerary.ItineraryDataView;
 import msg.flight.manager.persistence.dtos.itinerary.ItineraryTableResult;
+import msg.flight.manager.persistence.dtos.plane.Plane;
+import msg.flight.manager.persistence.dtos.plane.PlaneDataTableView;
+import msg.flight.manager.persistence.dtos.plane.PlaneTableResult;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
 import msg.flight.manager.persistence.dtos.user.update.UserTableResult;
 import msg.flight.manager.persistence.models.itinerary.DBItinerary;
@@ -20,6 +25,7 @@ import msg.flight.manager.services.itineraries.ItineraryService;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.json.JsonObject;
+import org.springframework.boot.json.GsonJsonParser;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -100,6 +106,24 @@ public class TableResult {
         }
     }
 
+    public PlaneTableResult toPlaneTableResult(Class <PlaneDataTableView> listClass){
+        try{
+            PlaneTableResult result = PlaneTableResult.builder()
+                    .max_planes(countResult.get(0).get("totalCount",Integer.class))
+                    .page(paginationResult.stream().map(doc ->{
+                        try{
+                            return convertDocumentToDto(doc,listClass);
+                        }catch (Exception e){
+                            throw new RuntimeException(e);
+                        }
+                    }).toList())
+                    .build();
+            return result;
+        }catch (IndexOutOfBoundsException ex){
+            return new PlaneTableResult(0,new ArrayList<>());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private <T> T convertDocumentToDto(Document document, Class<T> clazz) throws Exception {
         T dto = clazz.getDeclaredConstructor().newInstance();
@@ -117,12 +141,30 @@ public class TableResult {
                         .map(doc -> new JsonObject(doc.toJson()))
                         .collect(Collectors.toList());
                 field.set(dto, validations);
-            } else {
+            } else if(field.getType() == Company.class){
+                Document bsonDocument = (Document) document.get(field.getName(),Document.class);
+                ObjectMapper mapper = new ObjectMapper();
+                Company company = mapper.readValue(bsonDocument.toJson(),Company.class);
+                field.set(dto,company);
+            }
+            else {
                 Object object = document.get(field.getName(), field.getType());
-                if (field.getName().equals("username") || field.getName().equals("name") || field.getName().equals("icao") || field.getName().equals("id")) {
+                if (field.getName().equals("username") || field.getName().equals("name") || field.getName().equals("icao") || field.getName().equals("registrationNumber")) {
                     object = document.get("_id", field.getType());
                 }
-                field.set(dto, object);
+                if(field.getType() == Double.class){
+                    Double _d = (Double) object;
+                    _d = (double) Math.round(_d * 100)/100;
+                    field.set(dto,_d);
+                }
+                else if(field.getType() == Float.class){
+                    Float _f = (Float) object;
+                    _f = (float) Math.round(_f*100)/100;
+                    field.set(dto,_f);
+                }
+                else {
+                    field.set(dto, object);
+                }
             }
 
         }

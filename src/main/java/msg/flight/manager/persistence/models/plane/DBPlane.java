@@ -18,7 +18,6 @@ public class DBPlane {
 
     @Id
     private String registrationNumber;
-
     private String model;
     private String manufacturer;
     private int manufactureYear;
