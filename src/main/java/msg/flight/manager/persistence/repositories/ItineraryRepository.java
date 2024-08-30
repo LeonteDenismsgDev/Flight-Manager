@@ -70,9 +70,9 @@ public class ItineraryRepository {
         AggregationOperation skip = skip((long) pageable.getPageNumber()*pageable.getPageSize());
         AggregationOperation limit = Aggregation.limit(pageable.getPageSize());
         Aggregation aggregation = newAggregation(
-//                fieldsMatchOperation,
+                fieldsMatchOperation,
                 projectConcatFields,
-//                matchSearchString,
+                matchSearchString,
                 matchCrewID,
                 Aggregation.facet(Aggregation.count().as("totalCount")).as("countResult")
                         .and(skip,limit).as("paginationResult")

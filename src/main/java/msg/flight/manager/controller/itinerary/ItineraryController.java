@@ -29,7 +29,7 @@ public class ItineraryController {
         return this.service.getFiltered(request);
     }
 
-//    @PostMapping("/save")
+    @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody(required = true)Itinerary itinerary){
         return this.service.save(itinerary);
     }

@@ -34,9 +34,9 @@ public class Itinerary {
     @NotBlank(message = "arrival time should not be blank")
     private TimeHelper arrivalTime;
 
-    private short lateDepartureMinutes = 0;
+    private Integer lateDepartureMinutes = 0;
 
-    private short lateArrivalMinutes = 0;
+    private Integer lateArrivalMinutes = 0;
 
     @NotNull(message =  "Flight Number should not  be null")
     @NotBlank(message = "Flight Number should not be blank")

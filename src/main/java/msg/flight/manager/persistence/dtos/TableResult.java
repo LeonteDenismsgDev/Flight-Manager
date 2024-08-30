@@ -21,10 +21,12 @@ import msg.flight.manager.persistence.dtos.plane.PlaneTableResult;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
 import msg.flight.manager.persistence.dtos.user.update.UserTableResult;
 import msg.flight.manager.persistence.models.itinerary.DBItinerary;
+import msg.flight.manager.persistence.utils.TimeHelper;
 import msg.flight.manager.services.itineraries.ItineraryService;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.json.JsonObject;
+import org.bson.types.ObjectId;
 import org.springframework.boot.json.GsonJsonParser;
 
 import java.lang.reflect.Field;
@@ -147,20 +149,31 @@ public class TableResult {
                 Company company = mapper.readValue(bsonDocument.toJson(),Company.class);
                 field.set(dto,company);
             }
+            else if(field.getType() == TimeHelper.class){
+                Document bsonDocument = (Document) document.get(field.getName(),Document.class);
+                ObjectMapper mapper = new ObjectMapper();
+                TimeHelper timeHelper = mapper.readValue(bsonDocument.toJson(), TimeHelper.class);
+                field.set(dto,timeHelper);
+            }
             else {
                 Object object = document.get(field.getName(), field.getType());
-                if (field.getName().equals("username") || field.getName().equals("name") || field.getName().equals("icao") || field.getName().equals("registrationNumber")) {
-                    object = document.get("_id", field.getType());
+                if (field.getName().equals("username") || field.getName().equals("name") || field.getName().equals("icao") || field.getName().equals("registrationNumber") || field.getName().equals("id")) {
+                    try {
+                        object = document.get("_id", field.getType());
+                    }catch (ClassCastException cce){
+                        object = document.get("_id", ObjectId.class);
+                        object = ((ObjectId)object).toString();
+                    }
                 }
                 if(field.getType() == Double.class){
                     Double _d = (Double) object;
                     _d = (double) Math.round(_d * 100)/100;
-                    field.set(dto,_d);
+                    object = _d;
                 }
                 else if(field.getType() == Float.class){
                     Float _f = (Float) object;
                     _f = (float) Math.round(_f*100)/100;
-                    field.set(dto,_f);
+                    object = _f;
                 }
                 else {
                     field.set(dto, object);

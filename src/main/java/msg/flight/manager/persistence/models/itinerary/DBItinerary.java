@@ -28,6 +28,6 @@ public class DBItinerary {
     private TimeHelper arrTime;
     private String flightNumber;
     private String crewNumber;
-    private short lateDeparture;
-    private short lateArrival;
+    private Integer lateDeparture;
+    private Integer lateArrival;
 }
