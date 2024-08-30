@@ -46,40 +46,40 @@ public class ItineraryServiceTest {
 
     @Test
     public void dbItinerary2Itinerary_Itinerary_always(){
-        DBItinerary itinerary = generateDB("1","a","b",1,2);
-        Itinerary expected = generate("1","a","b",1,2);
-        Assertions.assertEquals(expected,this.service.dbItinerary2Itinerary(itinerary));
+        DBItinerary itinerary = generateDB("1","a","b");
+        Itinerary expected = generate("1","a","b");
+        Assertions.assertEquals(expected, ItineraryService.dbItinerary2Itinerary(itinerary));
     }
 
 
     @Test
     public void dbItinerary2Itinerary_Itinerary_whenIDIsNull(){
-        DBItinerary itinerary = generateDB(null,"a","b",1,2);
-        Itinerary expected = generate(null,"a","b",1,2);
-        Assertions.assertEquals(expected,service.dbItinerary2Itinerary(itinerary));
+        DBItinerary itinerary = generateDB(null,"a","b");
+        Itinerary expected = generate(null,"a","b");
+        Assertions.assertEquals(expected, ItineraryService.dbItinerary2Itinerary(itinerary));
     }
 
     @Test
     public void itinerary2DBItinerary_DBItinerary_always(){
-        Itinerary itinerary = generate("1","a","b",1,2);
-        DBItinerary expected = generateDB("1","a","b",1,2);
+        Itinerary itinerary = generate("1","a","b");
+        DBItinerary expected = generateDB("1","a","b");
         Assertions.assertEquals(expected,this.service.itinerary2DBItinerary(itinerary));
     }
 
 
     @Test
     public void itinerary2DBItinerary_DBItinerary_whenIDIsNull(){
-        Itinerary itinerary = generate(null,"a","b",1,2);
-        DBItinerary expected = generateDB(null,"a","b",1,2);
+        Itinerary itinerary = generate(null,"a","b");
+        DBItinerary expected = generateDB(null,"a","b");
         Assertions.assertEquals(expected,this.service.itinerary2DBItinerary(itinerary));
     }
 
     @Test
     public void get_Itinerary_whenIDExists(){
-        when(this.repository.get("1")).thenReturn(generateDB("1","a","b",1,2));
+        when(this.repository.get("1")).thenReturn(generateDB("1","a","b"));
         ResponseEntity<?> response = this.service.get("1");
         Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
-        Assertions.assertEquals(generate("1","a","b",1,2),response.getBody());
+        Assertions.assertEquals(generate("1","a","b"),response.getBody());
     }
 
     @Test
@@ -93,11 +93,11 @@ public class ItineraryServiceTest {
     @Test
     public void getAll_ItineraryList_always(){
         List<DBItinerary> results = new ArrayList<>();
-        results.add(generateDB("1","a","b",1,2));
-        results.add(generateDB("2","a","b",1,2));
+        results.add(generateDB("1","a","b"));
+        results.add(generateDB("2","a","b"));
         List<Itinerary> expected = new ArrayList<>();
-        expected.add(generate("1","a","b",1,2));
-        expected.add(generate("2","a","b",1,2));
+        expected.add(generate("1","a","b"));
+        expected.add(generate("2","a","b"));
         when(this.repository.get()).thenReturn(results);
         ResponseEntity<?> response = this.service.get();
         Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
@@ -113,8 +113,8 @@ public class ItineraryServiceTest {
 
     @Test
     public void save_failMessage_whenItineraryAlreadyThere(){
-        DBItinerary dbitinerary = generateDB("1","a","b",1,2);
-        Itinerary itinerary = generate("1","a","b",1,2);
+        DBItinerary dbitinerary = generateDB("1","a","b");
+        Itinerary itinerary = generate("1","a","b");
         when(this.repository.get("1")).thenReturn(dbitinerary);
         ResponseEntity<?> response = this.service.save(itinerary);
         Assertions.assertEquals(HttpStatus.NOT_ACCEPTABLE,response.getStatusCode());
@@ -123,7 +123,7 @@ public class ItineraryServiceTest {
 
     @Test
     public void save_successMessage_whenItineraryNotThere(){
-        Itinerary itinerary = generate("1","a","b",1,2);
+        Itinerary itinerary = generate("1","a","b");
         when(this.repository.get("1")).thenReturn(null);
         ResponseEntity<?> response = this.service.save(itinerary);
         Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
@@ -133,7 +133,7 @@ public class ItineraryServiceTest {
     @Test
     public void update_failMessage_whenItineraryNotExistent(){
         when(this.repository.get("1")).thenReturn(null);
-        Itinerary itinerary = generate("1","a","b",1,2);
+        Itinerary itinerary = generate("1","a","b");
         ResponseEntity<?> response = this.service.update("1",itinerary);
         Assertions.assertEquals("Itinerary with given ID doesnt exist",response.getBody());
         Assertions.assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
@@ -148,8 +148,8 @@ public class ItineraryServiceTest {
 
     @Test
     public void update_failMessage_whenDeletionFails(){
-        DBItinerary dbItinerary = generateDB("1","a","b",1,2);
-        Itinerary itinerary = generate("1","a","b",1,2);
+        DBItinerary dbItinerary = generateDB("1","a","b");
+        Itinerary itinerary = generate("1","a","b");
         when(this.repository.get("1")).thenReturn(dbItinerary);
         when(this.repository.delete("1")).thenReturn(false);
         ResponseEntity<?> response = this.service.update("1",itinerary);
@@ -159,8 +159,8 @@ public class ItineraryServiceTest {
 
     @Test
     public void update_failMessage_whenSaveFails(){
-        DBItinerary dbItinerary = generateDB("1","a","b",1,2);
-        Itinerary itinerary = generate("1","a","b",1,2);
+        DBItinerary dbItinerary = generateDB("1","a","b");
+        Itinerary itinerary = generate("1","a","b");
         when(this.repository.get("1")).thenReturn(dbItinerary);
         when(this.repository.delete("1")).thenReturn(true);
         when(this.repository.save(dbItinerary)).thenReturn(null);
@@ -171,8 +171,8 @@ public class ItineraryServiceTest {
 
     @Test
     public void update_successMessage_whenUpdateSucceeds(){
-        DBItinerary dbItinerary = generateDB("1","a","b",1,2);
-        Itinerary itinerary = generate("1","a","b",1,2);
+        DBItinerary dbItinerary = generateDB("1","a","b");
+        Itinerary itinerary = generate("1","a","b");
         when(this.repository.get("1")).thenReturn(dbItinerary);
         when(this.repository.delete("1")).thenReturn(true);
         when(this.repository.save(dbItinerary)).thenReturn(dbItinerary);
@@ -181,25 +181,25 @@ public class ItineraryServiceTest {
         Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
     }
 
-    private DBItinerary generateDB(String id, String dep, String arr, TimeHelper depTime, TimeHelper arrTime){
+    private DBItinerary generateDB(String id, String dep, String arr){
         return DBItinerary
                 .builder()
                 .id(id)
                 .dep(dep)
                 .arr(arr)
-                .depTime(depTime)
-                .arrTime(arrTime)
+                .depTime(TimeHelper.builder().build())
+                .arrTime(TimeHelper.builder().build())
                 .build();
     }
 
-    private Itinerary generate(String id,String dep, String arr, TimeHelper depTime, TimeHelper arrTime){
+    private Itinerary generate(String id,String dep, String arr){
         return Itinerary
                 .builder()
                 .ID(id)
                 .departure(dep)
                 .arrival(arr)
-                .departureTime(depTime)
-                .arrivalTime(arrTime)
+                .departureTime(TimeHelper.builder().build())
+                .arrivalTime(TimeHelper.builder().build())
                 .build();
     }
 }

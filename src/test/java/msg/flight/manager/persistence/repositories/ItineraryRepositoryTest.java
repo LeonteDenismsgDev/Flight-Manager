@@ -2,6 +2,7 @@ package msg.flight.manager.persistence.repositories;
 
 import msg.flight.manager.persistence.dtos.plane.Plane;
 import msg.flight.manager.persistence.models.itinerary.DBItinerary;
+import msg.flight.manager.persistence.utils.TimeHelper;
 import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,9 +128,8 @@ public class ItineraryRepositoryTest {
                 .id(id)
                 .dep(dep)
                 .arr(arr)
-                .depTime(depTime)
-                .arrTime(arrTime)
-                .plane(new Plane())
+                .depTime(TimeHelper.builder().build())
+                .arrTime(TimeHelper.builder().build())
                 .build();
     }
 }
