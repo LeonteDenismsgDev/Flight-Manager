@@ -64,7 +64,7 @@ public class UserService {
 
     public ResponseEntity<?> getCurrent(){
         SecurityUser user = securityUser.getLoggedUser();
-        return new ResponseEntity<>(new AuthenticationResponse(user.getUsername(),"",user.getRole()), HttpStatusCode.valueOf(202));
+        return new ResponseEntity<>(new AuthenticationResponse(user.getUsername(),user.getUsername(),user.getRole()), HttpStatusCode.valueOf(202));
     }
 
     @SneakyThrows
