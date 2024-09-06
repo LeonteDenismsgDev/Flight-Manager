@@ -23,15 +23,14 @@ public class AirportController {
         return this.service.getAirports();
     }
 
-    @GetMapping("/prepare")
+//    @GetMapping("/prepare")
     public ResponseEntity<?> prepare(){
         return this.service.prepare();
     }
 
     @PostMapping("/filter")
     public ResponseEntity<?> getFiltered(@RequestBody(required = true)GetAirport request){
-        AirportTableResult result = this.service.getAirportsFiltered(request);
-        return new ResponseEntity<>(result, HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(this.service.getAirportsFiltered(request), HttpStatusCode.valueOf(200));
     }
 
     @GetMapping("/get")

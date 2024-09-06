@@ -1,5 +1,6 @@
 package msg.flight.manager.controller.plane;
 
+import msg.flight.manager.persistence.dtos.plane.GetPlane;
 import msg.flight.manager.persistence.dtos.plane.Plane;
 import msg.flight.manager.services.planes.PlaneService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,19 @@ public class PlaneController {
         return this.service.getCompanyPlanes();
     }
 
+    @PostMapping("/view/company")
+    public ResponseEntity<?> getFilteredCompanyPlanes(@RequestBody(required = true) GetPlane request){
+        return this.service.getFilteredCompanyPlanes(request);
+    }
+
     @GetMapping("/view")
     public ResponseEntity<?> getOne(@RequestParam(required = true) String registrationNumber){
         return this.service.get(registrationNumber);
+    }
+
+    @PostMapping("/view/filtered")
+    public ResponseEntity<?> getFiltered(@RequestBody(required = true)GetPlane request){
+        return this.service.getFiltered(request);
     }
 
     @PreAuthorize("hasAuthority('ADMINISTRATOR_ROLE')")

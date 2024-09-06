@@ -8,12 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import msg.flight.manager.persistence.dtos.company.Company;
 
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Plane {
-
+public class PlaneDataTableView {
     @NotNull(message = "plane model should not be null")
     @NotBlank(message = "plane model should not be blank")
     private String model;
@@ -32,23 +32,23 @@ public class Plane {
 
     @NotNull(message = "plane year should not  be null")
     @NotBlank(message = "plane year should not be blank")
-    private int range;
+    private Integer range;
 
     @NotNull(message = "plane cruising speed should not be null")
     @NotBlank(message = "plane cruising speed should not be blank")
-    private int cruisingSpeed;
+    private Integer cruisingSpeed;
 
     @NotNull(message = "plane wingspan should not be null")
     @NotBlank(message = "plane wingspan should not be blank")
-    private float wingspan;
+    private Double wingspan;
 
     @NotNull(message = "plane length should not be null")
     @NotBlank(message = "plane length should not be blank")
-    private float length;
+    private Double length;
 
     @NotNull(message = "plane height should not be null")
     @NotBlank(message = "plane height should not be blank")
-    private float height;
+    private Double height;
 
     @NotNull(message = "plane company should not be null")
     @NotBlank(message = "plane company should not be blank")
