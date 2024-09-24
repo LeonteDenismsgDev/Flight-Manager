@@ -10,6 +10,7 @@ import msg.flight.manager.persistence.repositories.UserRepository;
 import msg.flight.manager.security.SecurityUser;
 import msg.flight.manager.services.utils.SecurityUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -102,5 +103,16 @@ public class CompanyService {
     public ResponseEntity<?> getCurrent(){
         SecurityUser user = this.securityUser.getLoggedUser();
         return this.viewOne(user.getCompany());
+    }
+
+    public ResponseEntity<?> getExportData(){
+        List<DBCompany> companies = this.repository.getAll();
+        int maxFleet=0;
+        for(DBCompany company : companies){
+            if(company.getFleet()>maxFleet){
+                maxFleet = company.getFleet();
+            }
+        }
+        return new ResponseEntity<>(maxFleet, HttpStatus.OK);
     }
 }

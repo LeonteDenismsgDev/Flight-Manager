@@ -48,4 +48,9 @@ public class CompanyController {
     public ResponseEntity<?> getCurrent(){
         return this.service.getCurrent();
     }
+
+    @GetMapping("/export-data")
+    public ResponseEntity<?> getExportData(){
+        return this.service.getExportData();
+    }
 }
