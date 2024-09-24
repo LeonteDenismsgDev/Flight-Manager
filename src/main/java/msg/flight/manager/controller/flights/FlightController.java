@@ -1,14 +1,16 @@
 package msg.flight.manager.controller.flights;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.validation.Valid;
+import msg.flight.manager.persistence.dtos.flights.flights.*;
 import msg.flight.manager.services.flights.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("flymanager/flight")
@@ -18,24 +20,41 @@ public class FlightController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('FLIGHT_MANAGER_ROLE')")
-    public ResponseEntity<String> saveFlight(@RequestBody(required = true)JsonNode flight, @RequestParam(required = true) String templateName){
-        return flightService.saveFlight(flight,templateName);
+    public ResponseEntity<String> saveFlight(@Valid @RequestBody(required = true) RegisterFlightDTO flightDTO) {
+        return flightService.saveFlight(flightDTO);
     }
 
-    @GetMapping("/view")
-    public List<Map<String,Object>> getFlights(@RequestParam(required = true)Integer page, @RequestParam(required = true)Integer size){
-        return flightService.getFlights(page,size);
+    @PostMapping("/view")
+    public List<FlightDescriptionDTO> getFlights(@RequestBody(required = true) GetDateFlightsDTO getDateFlightsDTO) {
+        return flightService.getDateFlights(getDateFlightsDTO);
     }
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('FLIGHT_MANAGER_ROLE')")
-    public ResponseEntity<String> deleteFlight(@RequestParam(required = true)String flightId){
+    public ResponseEntity<String> deleteFlight(@RequestParam(required = true) String flightId) {
         return flightService.deleteFlight(flightId);
     }
 
-    @PostMapping("/update")
+    @DeleteMapping("/recurrence/delete")
     @PreAuthorize("hasAuthority('FLIGHT_MANAGER_ROLE')")
-    public ResponseEntity<String> updateFlight(@RequestBody(required = true) JsonNode flight,@RequestParam(required = true) String flightId){
+    public ResponseEntity<String> deleteRecurrence(String id) {
+        return flightService.deleteRecurrence(id);
+    }
+
+    @PostMapping("/update/flight")
+    public ResponseEntity<String> updateFlight(@RequestBody(required = true) UpdateFlightDTO flight,
+                                               @RequestParam(required = true) String flightId) {
         return flightService.updateFlight(flight,flightId);
+    }
+
+    @PostMapping("/update/recurrence/flight")
+    public ResponseEntity<String> updateRecurrenceFlight(@RequestBody(required = true) RegisterRecurrenceFlight flight) {
+        return flightService.updateNonExistentRecurrenceFlight(flight);
+    }
+
+    @PostMapping("/history")
+    @PreAuthorize("hasAuthority('ADMINISTRATOR_ROLE') or hasAuthority('COMPANY_MANAGER_ROLE') or hasAuthority('FLIGHT_MANAGER_ROLE')")
+    public List<FlightDescriptionDTO> flightsHistory(@RequestParam(required = false) Integer months){
+        return  new ArrayList<>();
     }
 }

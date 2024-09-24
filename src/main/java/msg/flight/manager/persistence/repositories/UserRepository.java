@@ -5,6 +5,7 @@ import msg.flight.manager.persistence.dtos.TableResult;
 import msg.flight.manager.persistence.dtos.user.UsersFilterOptions;
 import msg.flight.manager.persistence.dtos.user.update.AdminUpdateUser;
 import msg.flight.manager.persistence.dtos.user.update.UpdateUserDto;
+import msg.flight.manager.persistence.enums.Role;
 import msg.flight.manager.persistence.models.company.DBCompany;
 import msg.flight.manager.persistence.models.user.DBUser;
 import msg.flight.manager.persistence.repositories.utils.ObjectFieldsUtils;
@@ -36,9 +37,13 @@ public class UserRepository {
 
     public Optional<SecurityUser> findByUsername(String username) {
         Query query = new Query(Criteria.where("username").is(username));
-        query.fields().include("username").include("role").include("password").include("enabled").include("company");
         SecurityUser result = template.findOne(query, SecurityUser.class, "users");
         return Optional.ofNullable(result);
+    }
+
+    public List<DBUser> getAllAdministrators(){
+        Query query =  new Query(Criteria.where("role").is(Role.ADMINISTRATOR_ROLE.name()));
+        return template.find(query, DBUser.class,"users");
     }
 
     public AdminUpdateUser findDataByUsername(String username) {

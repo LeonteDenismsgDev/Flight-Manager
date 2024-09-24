@@ -45,7 +45,8 @@ public class CompanyServiceTest {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
-        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(new SecurityUser("0denLad","",true,"ADMINISTRATOR_ROLE","Wizz Air"));
+        //when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(new SecurityUser("0denLad","",true,
+         //       "ADMINISTRATOR_ROLE","Wizz Air"));
         service = new CompanyService();
 
         MockitoAnnotations.openMocks(this);
@@ -126,8 +127,8 @@ public class CompanyServiceTest {
 
     @Test
     public void update_errorMessage_whenCompanyIsNotEqual(){
-        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
+       // when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+        //        .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
         ResponseEntity<?> response = service.update("Lufthansa",new UpdateCompanyDTO("Wizz Air",new HashMap<String,String>()));
         assert(response.getBody().equals("You dont have the permission to edit this company"));
         assert(response.getStatusCode().equals(HttpStatusCode.valueOf(403)));
@@ -135,8 +136,8 @@ public class CompanyServiceTest {
 
     @Test
     public void update_errorMessage_whenIsEqualButRepositoryOperationFailed(){
-        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
+      //  when(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+   //             .thenReturn(new SecurityUser("0denLad","",true,"COMPANY_MANAGER","Wizz Air"));
 //        Mockito.when(this.repository.update("Wizz Air",new DBCompany("Wizz Air",10,new HashMap<String,String>())))
 //                .thenReturn(false);
         ResponseEntity<?> response = service.update("Wizz Air",new UpdateCompanyDTO("Wizz Air",new HashMap<String,String>()));

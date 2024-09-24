@@ -3,7 +3,6 @@ package msg.flight.manager.controller.flights;
 import jakarta.validation.Valid;
 import msg.flight.manager.persistence.dtos.flights.attributes.AttributeDTO;
 import msg.flight.manager.persistence.dtos.flights.attributes.RegisterAttribute;
-import msg.flight.manager.persistence.models.flights.DBAttribute;
 import msg.flight.manager.services.flights.AttributeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +30,11 @@ public class AttributeController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAttribute(@Valid @RequestParam String id){
-        return attributeService.deleteAttr(id);
+        return attributeService.deleteAttribute(id);
     }
 
     @PostMapping("/update")
     public ResponseEntity<String> updateAttribute(@Valid @RequestParam String id, @Valid @RequestBody(required = true) AttributeDTO updatedAttribute){
-        return attributeService.updateAttr(id,updatedAttribute);
+        return attributeService.updateAttribute(id,updatedAttribute);
     }
 }

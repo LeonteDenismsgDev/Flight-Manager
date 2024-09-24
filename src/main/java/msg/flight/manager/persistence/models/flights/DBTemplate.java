@@ -1,9 +1,6 @@
 package msg.flight.manager.persistence.models.flights;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import msg.flight.manager.persistence.dtos.flights.attributes.TemplateAttribute;
 import org.bson.json.JsonObject;
 import org.springframework.data.annotation.Id;
@@ -16,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode
 @Document(collection = "templates")
 public class DBTemplate {
     @Id

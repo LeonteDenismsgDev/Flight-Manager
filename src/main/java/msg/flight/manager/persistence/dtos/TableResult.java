@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import msg.flight.manager.persistence.dtos.airport.Airport;
 import msg.flight.manager.persistence.dtos.airport.AirportDataTableView;
 import msg.flight.manager.persistence.dtos.airport.AirportTableResult;
 import msg.flight.manager.persistence.dtos.flights.TemplateTableResult;
@@ -18,6 +17,7 @@ import org.bson.json.JsonObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,9 +57,9 @@ public class TableResult {
                 .build();
     }
 
-    public AirportTableResult toAirportTableResult(Class <AirportDataTableView> listClass) {
+    public AirportTableResult toAirportTableResult(Class<AirportDataTableView> listClass) {
         try {
-            AirportTableResult result = AirportTableResult.builder()
+            return AirportTableResult.builder()
                     .max_airports(countResult.get(0).get("totalCount", Integer.class))
                     .page(paginationResult.stream().map(doc -> {
                         try {
@@ -69,9 +69,8 @@ public class TableResult {
                         }
                     }).toList())
                     .build();
-            return result;
-        }catch (IndexOutOfBoundsException ex){
-            return new AirportTableResult(0,new ArrayList<>());
+        } catch (IndexOutOfBoundsException ex) {
+            return new AirportTableResult(0, new ArrayList<>());
         }
     }
 
@@ -107,9 +106,7 @@ public class TableResult {
     public List<Field> getAllFields(Class<?> clazz) {
         List<Field> fields = new ArrayList<>();
         while (clazz != null) {
-            for (Field field : clazz.getDeclaredFields()) {
-                fields.add(field);
-            }
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
             clazz = clazz.getSuperclass();
         }
         return fields;

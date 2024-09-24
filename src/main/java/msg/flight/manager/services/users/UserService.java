@@ -38,7 +38,7 @@ public class UserService {
     @Autowired
     private WorkHoursRepository workHoursRepository;
     @Autowired
-    private SecurityUserUtil securityUser = new SecurityUserUtil();
+    private SecurityUserUtil securityUser;
 
     @Transactional
     public ResponseEntity<String> save(RegistrationUser registrationUser) {

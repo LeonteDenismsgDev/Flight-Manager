@@ -1,5 +1,6 @@
 package msg.flight.manager.persistence.repositories;
 
+import msg.flight.manager.persistence.models.user.DBUser;
 import msg.flight.manager.persistence.models.user.DBUserWorkHours;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -18,22 +19,31 @@ public class WorkHoursRepository {
     private MongoTemplate template;
 
     public List<String> findAvailableUsers(LocalDateTime startTime, LocalDateTime endTime, String startLocation) {
-        Criteria criteria = new Criteria().orOperator(
-                Criteria.where("endTime").lt(startTime),
-                Criteria.where("startTime").gt(endTime)
+        Criteria firstCriteria = new Criteria().andOperator(
+                Criteria.where("endTime").gte(startTime),
+                Criteria.where("startTime").lte(startTime)
         );
-        Query overlappingEntriesQuery = new Query(new Criteria().norOperator(criteria));
+        Criteria secondCriteria = new Criteria().andOperator(
+                Criteria.where("startTime").gte(startTime),
+                Criteria.where("startTime").lte(endTime)
+        );
+        Criteria criteria = new Criteria();
+        criteria.orOperator(
+                firstCriteria,
+                secondCriteria
+        );
+        Query overlappingEntriesQuery = new Query(criteria);
         List<DBUserWorkHours> overlappingEntries = template.find(overlappingEntriesQuery, DBUserWorkHours.class);
         List<String> overlappingUsernames = overlappingEntries.stream()
                 .map(DBUserWorkHours::getUser)
                 .distinct()
                 .collect(Collectors.toList());
-        Criteria queryCriteria = new Criteria().andOperator(
-                Criteria.where("user").nin(overlappingUsernames),
-                Criteria.where("endTime").lt(startTime)
+        Criteria usersCriteria = new Criteria();
+        usersCriteria.andOperator(
+                Criteria.where("_id").nin(overlappingUsernames),
+                Criteria.where("role").is("CREW_ROLE")
         );
-        Query lastFlights = new Query(queryCriteria).with(Sort.by(Sort.Direction.DESC, "endTime")).limit(1);
-        List<DBUserWorkHours> flights = template.find(lastFlights, DBUserWorkHours.class);
-        return flights.stream().filter(hour -> hour.getLastLocation().equals(startLocation)).map(DBUserWorkHours::getUser).distinct().toList();
+        List<DBUser> users = template.find(new Query(usersCriteria), DBUser.class,"users");
+        return users.stream().map(DBUser::getUsername).distinct().toList();
     }
 }

@@ -1,6 +1,7 @@
 package msg.flight.manager.persistence.repositories;
 
 import com.mongodb.client.result.DeleteResult;
+import jakarta.validation.constraints.NotNull;
 import msg.flight.manager.persistence.dtos.TableResult;
 import msg.flight.manager.persistence.dtos.flights.templates.TemplateDTO;
 import msg.flight.manager.persistence.models.flights.DBTemplate;
@@ -45,7 +46,7 @@ public class TemplateRepository {
         return result.getDeletedCount();
     }
 
-    public int updateTemplate(String name, DBTemplate updatedTemplate) throws IllegalAccessException {
+    public int updateTemplate(String name, DBTemplate updatedTemplate) {
         long deleted = this.deleteTemplate(name);
         if(deleted <= 0){
             return -1;
@@ -57,8 +58,13 @@ public class TemplateRepository {
         return 0;
     }
 
-    public TemplateDTO findTemplate(String name) {
+    public TemplateDTO findTemplate(@NotNull String name) {
         Query query  = new Query(Criteria.where("_id").is(name));
        return this.mongoTemplate.findOne(query,TemplateDTO.class,"templates");
+    }
+
+    public DBTemplate findDBTemplate(@NotNull String name) {
+        Query query  = new Query(Criteria.where("_id").is(name));
+        return this.mongoTemplate.findOne(query,DBTemplate.class,"templates");
     }
 }

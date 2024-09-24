@@ -1,6 +1,7 @@
 package msg.flight.manager.persistence.repositories;
 
 import com.mongodb.client.result.DeleteResult;
+import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 import msg.flight.manager.persistence.dtos.TableResult;
 import msg.flight.manager.persistence.dtos.airport.Airport;
@@ -33,7 +34,7 @@ public class AirportRepository {
     @Autowired
     private MongoTemplate template;
 
-    public DBAirport get(String icao){
+    public DBAirport get(@NotNull String icao){
         Query query = new Query(Criteria.where("_id").is(icao));
         return template.findOne(query,DBAirport.class,"airports");
     }

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -24,6 +25,9 @@ public class SecurityUser implements UserDetails {
     private Boolean enabled;
     private String role;
     private String company;
+    private String firstName;
+    private String lastName;
+    private Map<String,String> contactData;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,5 +1,6 @@
 package msg.flight.manager.services.users;
 
+import msg.flight.manager.persistence.dtos.flights.flights.FlightDescriptionDTO;
 import msg.flight.manager.persistence.models.user.DBUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
