@@ -46,11 +46,11 @@ public class ExportService {
                 user.getAddress()+","+
                 user.getEnabled();
         if(!user.getContactData().isEmpty()) {
-            ret+=",{";
+            ret+=",";
             for (Map.Entry<String, String> entry : user.getContactData().entrySet()) {
-                ret += entry.getKey() + ":" + entry.getValue() + ";";
+                ret += entry.getKey() + ":" + entry.getValue() + ",";
             }
-            ret = ret.substring(0, ret.length() - 1) + "}";
+            ret = ret.substring(0, ret.length() - 1);
         }
         return ret;
     }
@@ -59,11 +59,11 @@ public class ExportService {
         String ret = company.getName()+","+
                 company.getFleet();
         if(!company.getContactData().isEmpty()) {
-            ret+=",{";
+            ret+=",";
             for (Map.Entry<String, String> entry : company.getContactData().entrySet()) {
-                ret += entry.getKey() + ":" + entry.getValue() + ";";
+                ret += entry.getKey() + ":" + entry.getValue() + ",";
             }
-            ret = ret.substring(0, ret.length() - 1) + "}";
+            ret = ret.substring(0, ret.length() - 1);
         }
         return ret;
     }
@@ -75,11 +75,11 @@ public class ExportService {
                 .append(airport.getIata()).append(",")
                 .append(airport.getLocation());
         if(!airport.getContactData().isEmpty()) {
-            builder.append(",{");
+            builder.append(",");
             for (Map.Entry<String, String> entry : airport.getContactData().entrySet()) {
-                builder.append(entry.getKey()).append(":").append(entry.getValue()).append(";");
+                builder.append(entry.getKey()).append(":").append(entry.getValue()).append(",");
             }
-            builder.deleteCharAt(builder.lastIndexOf(";")).append("}");
+            builder.deleteCharAt(builder.lastIndexOf(","));
         }
         return builder.toString();
     }
@@ -89,7 +89,7 @@ public class ExportService {
         builder.append(plane.getRegistrationNumber()).append(",")
                 .append(plane.getManufacturer()).append(",")
                 .append(plane.getModel()).append(",")
-                .append(plane.getCompany()).append(",")
+                .append(plane.getCompany().getName()).append(",")
                 .append(plane.getManufactureYear()).append(",")
                 .append(plane.getRange()).append(",")
                 .append(plane.getLength()).append(",")
